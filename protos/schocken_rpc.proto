@@ -1,0 +1,116 @@
+// Schocken App v0 Remote Procedure Calls
+
+syntax = "proto3";
+
+// option java_multiple_files = true;
+// option java_package = "io.grpc.examples.helloworld";
+// option java_outer_classname = "SchockenProto";
+// option objc_class_prefix = "HLW";
+
+// package Schocken;
+
+service SchockenConnector {
+  // Lobby RPCs
+  // Services called from Lobby:
+  rpc registerPlayer(PlayerInfo) returns (RegistrationResponse) {}
+  // 
+  rpc getPlayerList(GameID) returns (PlayerList) {}
+  // Host opening a new Game
+  rpc registerGame(PlayerInfo) returns (GameID) {}
+  // host action to Start the Game
+  rpc startGame(GameID) returns (StartGameResponse) {}
+
+  // Game RPCs
+  rpc touchDice(DiceTouched) returns (RpcGameData) {}
+  rpc touchCup(PlayerInfo) returns (RpcGameData) {}
+  rpc turnSix(PlayerInfo) returns (RpcGameData) {}
+  rpc endTurn(PlayerInfo) returns (RpcGameData) {}
+  rpc refreshGame(PlayerInfo) returns (RpcGameData) {}
+
+}
+
+message PlayerInfo {
+  string player_name = 1;
+  string game_name = 2;
+  int32 player_nr = 3;
+  int32 game_nr = 4;
+}
+
+message RegistrationResponse {
+  int32 return_value = 1;
+  int32 player_nr = 2;
+  int32 game_nr = 3;
+  string error_msg = 4;
+}
+
+message GameID {
+  string game_name = 1;
+  int32 game_nr = 2;
+  string error_msg = 3;
+}
+
+message PlayerList {
+  repeated string player_names = 1;
+  state status = 2;
+  enum state {
+    LOBBY = 0;
+    STARTING = 1;
+    RUNNING = 2;
+    ENDED = 3;
+    TIMEOUT = 4;
+    ERROR = 5;
+  }
+}
+
+message Empty {
+
+}
+
+message StartGameResponse {
+  int32 return_value = 1;
+  string error_msg = 2;
+}
+
+message DiceTouched {
+  int32 dice_id = 1;
+  int32 player_nr = 2;
+  int32 game_nr = 3;
+  string game_name = 4;
+  string player_name = 5;
+}
+
+message RpcGameData {
+  string game_name = 1;
+  repeated RpcPlayer players = 2;
+  game_state game_status = 3;
+  RpcPlayer active_player = 4; // todo: delete!
+  int32 active_roll = 5;
+  int32 max_rolls = 6;
+  bool active_cup_up = 7;
+  string message = 8;
+  bool button_turn_6 = 9;
+
+  enum game_state {
+    LOBBY = 0;
+    STARTING = 1;
+    RUNNING = 2;
+    ENDED = 3;
+    TIMEOUT = 4;
+    ERROR = 5;
+  }
+}
+
+message RpcPlayer {
+  string player_name = 1;
+  player_state player_status = 2;
+  int32 harte = 3;
+  repeated int32 dice = 4;
+  
+  enum player_state {
+    ACTIVE = 0;
+    PASSIVE = 1;
+    SPEC = 2;
+    LEFT = 3;
+    OTHER = 4;
+  }
+}
