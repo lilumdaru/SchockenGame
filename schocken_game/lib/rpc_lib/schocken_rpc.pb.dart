@@ -365,6 +365,7 @@ class RpcGameData extends $pb.GeneratedMessage {
     ..aOB(7, 'activeCupUp')
     ..aOS(8, 'message')
     ..aOB(9, 'buttonTurn6', protoName: 'button_turn_6')
+    ..aOB(10, 'generateReport')
     ..hasRequiredFields = false
   ;
 
@@ -459,6 +460,15 @@ class RpcGameData extends $pb.GeneratedMessage {
   $core.bool hasButtonTurn6() => $_has(8);
   @$pb.TagNumber(9)
   void clearButtonTurn6() => clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.bool get generateReport => $_getBF(9);
+  @$pb.TagNumber(10)
+  set generateReport($core.bool v) { $_setBool(9, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasGenerateReport() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearGenerateReport() => clearField(10);
 }
 
 class RpcPlayer extends $pb.GeneratedMessage {

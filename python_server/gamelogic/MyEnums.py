@@ -8,6 +8,7 @@ class PlayerState(Enum):
     LEFT = 3
     ARRIVED = 4
     UNINITIALIZED = 5
+    SEND_REPORT = 6
 
     def __eq__(self, other):
         return self.value == other.value
@@ -17,13 +18,14 @@ class PlayerState(Enum):
 
 
 class GameState(Enum):
-    LOBBY = 7
+    LOBBY = 0
     STARTING = 1
     RUNNING = 2
     ENDED = 3
     TIMEOUT = 4
     ERROR = 5
     UNINITIALIZED = 6
+    SEND_REPORT = 7
 
     def __eq__(self, other):
         return self.value == other.value

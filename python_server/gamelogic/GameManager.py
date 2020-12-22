@@ -140,8 +140,8 @@ class GameManager:
         if(not self.game_name_exist(game_name)):
             return self.return_error("Game name doesn't exist!")
         # check game Status
-        if(self.games[game_name].game_status != GameState.STARTING and self.games[game_name].game_status != GameState.RUNNING):
-            return self.return_error("Register to game is not possible. Was the game already started?")
+        if(self.games[game_name].game_status != GameState.STARTING and self.games[game_name].game_status != GameState.RUNNING and self.games[game_name].game_status != GameState.SEND_REPORT):
+            return self.return_error("Game not running. Is the game already ended?")
 
         self.games[game_name].refresh_player(player_name)
         return self.games[game_name]

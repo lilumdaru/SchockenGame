@@ -90,6 +90,7 @@ const RpcGameData$json = const {
     const {'1': 'active_cup_up', '3': 7, '4': 1, '5': 8, '10': 'activeCupUp'},
     const {'1': 'message', '3': 8, '4': 1, '5': 9, '10': 'message'},
     const {'1': 'button_turn_6', '3': 9, '4': 1, '5': 8, '10': 'buttonTurn6'},
+    const {'1': 'generate_report', '3': 10, '4': 1, '5': 8, '10': 'generateReport'},
   ],
   '4': const [RpcGameData_game_state$json],
 };

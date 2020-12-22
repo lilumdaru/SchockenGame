@@ -83,12 +83,13 @@ message RpcGameData {
   string game_name = 1;
   repeated RpcPlayer players = 2;
   game_state game_status = 3;
-  RpcPlayer active_player = 4; // todo: delete!
+  RpcPlayer active_player = 4; // todo: deprecated. delete!
   int32 active_roll = 5;
   int32 max_rolls = 6;
-  bool active_cup_up = 7;
+  bool active_cup_up = 7;  // todo: deprecated. delete!
   string message = 8;
   bool button_turn_6 = 9;
+  bool generate_report = 10;
 
   enum game_state {
     LOBBY = 0;

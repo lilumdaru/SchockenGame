@@ -14,13 +14,14 @@ class Game:
         self.active_roll = 0
         self.max_rolls = 3
         self.message = ""
-        self.last_action = 0  # or use timestamp compatible datatyp
+        self.last_action = 0 # or use timestamp compatible datatyp
         self.player_counter = 0
         self.turn_six_button = False
         self.count_sixer = 0
         self.id_player_active = 0
         self.harte_stack = 13
         self.MAX_PLAYERS = 4
+        self.send_report = False
 
 
     def player_name_exists(self, player_name):
@@ -29,9 +30,9 @@ class Game:
                 return True
         return False
 
+
     def set_game_status(self, new_game_status):
         self.game_status = new_game_status
-
 
 
     def get_player_by_name(self, player_name):
@@ -136,10 +137,12 @@ class Game:
         # check if player_name exists
         if(not self.player_name_exists(player_name)):
             return
-        player = self.get_player_by_name(player_name)
+        current_player = self.get_player_by_name(player_name)
+
+        ## Manage round start
         # if player is UNINITIALIZED, set ARRIVED
-        if(player.player_status == PlayerState.UNINITIALIZED):
-            player.player_status = PlayerState.ARRIVED
+        if(current_player.player_status == PlayerState.UNINITIALIZED):
+            current_player.player_status = PlayerState.ARRIVED
         # if all player are ARRIVED, start Game, game_status = RUNNING, player_status ACTIVE/PASSIV
         all_arrived = True
         for player in self.players:
@@ -149,6 +152,16 @@ class Game:
             # start game
             self.start_round()
             self.game_status = GameState.RUNNING
+
+        # send end of round Report
+        if(current_player.player_status == PlayerState.SEND_REPORT):
+            self.send_report = True
+            current_player.player_status = PlayerState.ARRIVED
+        else:
+            self.send_report = False
+        
+        self.touch_player(player_name)
+        self.cleanup()
 
 
     def end_round(self):
@@ -174,7 +187,10 @@ class Game:
 
         # change order of List, losser is first now!
         self.players = self.players[index_looser:] + self.players[:index_looser]
-        self.start_round()
+
+        for player in self.players:
+            player.player_status = PlayerState.SEND_REPORT
+        self.game_status = GameState.SEND_REPORT
 
 
     def start_round(self):
@@ -194,4 +210,14 @@ class Game:
         else:
             return False
 
-            
+
+    def cleanup(self):
+        # check all players and delete idle players.
+        #TODO
+        pass
+
+
+    def touch_player(self, player_name):
+        # if playername exists, save current timestamp inside
+        #TODO
+        pass
