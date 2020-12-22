@@ -12,8 +12,8 @@ from gamelogic.Logger import Logger
 from rpc_lib import schocken_rpc_pb2
 from rpc_lib import schocken_rpc_pb2_grpc
 
-from GameLogic.GameManager import GameManager
-from GameLogic.MyEnums import GameState, PlayerState
+from gamelogic.GameManager import GameManager
+from gamelogic.MyEnums import GameState, PlayerState
 
 logger = Logger()
 
@@ -103,8 +103,8 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         return self.convertGamedata(GameData)
 
     def refreshGame(self, request, context):
-        logger.log("refreshGame player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
-              "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
+        # logger.log("refreshGame player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
+        #       "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
         GameData = self.GM.refresh_game(request.game_name.upper(), request.player_name)
         return self.convertGamedata(GameData)
 

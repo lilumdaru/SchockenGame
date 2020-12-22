@@ -19,7 +19,7 @@ class GameManager:
     # gameNameID = {}  # dict holding GameName -> Game
     MAX_GAMES = 50
     GAME_NAME_LENGTH = 3
-    game_counter = 0
+    game_counter = 1
 
 
     def register_game(self):

@@ -27,7 +27,7 @@ class _GameState extends State<Game> {
     AppBar appBar = AppBar(
       title: Text('Schocken v.0'),
       centerTitle: true,
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: true,
     );
     double screenHeightMinusAppBarMinusStatusBar =
         MediaQuery.of(context).size.height -

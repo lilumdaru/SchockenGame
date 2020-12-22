@@ -65,7 +65,7 @@ class _LobbyClientState extends State<LobbyClient> {
     AppBar appBar = AppBar(
       title: Text('Schocken v.0: ' + gameName),
       centerTitle: true,
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: true,
     );
     double screenHeightMinusAppBarMinusStatusBar =
         MediaQuery.of(context).size.height -

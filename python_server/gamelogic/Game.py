@@ -57,7 +57,7 @@ class Game:
         # avoid index out of range
         if(len(player.dices) <= dice_id):
             return
-        if(self.active_roll == 3):
+        if(self.max_rolls - self.active_roll <= 0):
             return
         # remove dice with dice_id from dice list
         del player.dices[dice_id]
@@ -73,7 +73,7 @@ class Game:
             return
         if(len(player.dices) == 3):
             return
-        if(self.active_roll == 2):
+        if(self.max_rolls - self.active_roll == 1):
             self.active_roll = self.active_roll +1
             return
         # roll dices until 3 dices are full
@@ -111,13 +111,23 @@ class Game:
         # check if player_name is active player
         if(self.players[self.id_player_active].player_name != player_name):
             return
+        # first players sets max number of rolls for round
+        if(self.id_player_active == 0):
+            if(len(self.players[self.id_player_active].dices) != 3):
+                self.active_roll = self.active_roll +1
+                if(self.active_roll > 3):
+                    self.active_roll = 3
+            self.max_rolls = self.active_roll
+            if(self.max_rolls == 0):
+                self.max_rolls = 1
         # change player_status active to passive and next player to active
         self.players[self.id_player_active].player_status = PlayerState.PASSIVE
         if(len(self.players) > self.id_player_active + 1):
             # next player
             self.id_player_active = self.id_player_active + 1
-            self.active_roll = 1
+            self.active_roll = 0
             self.players[self.id_player_active].player_status = PlayerState.ACTIVE
+            self.touch_cup(self.players[self.id_player_active].player_name)
         else:
             self.end_round()
     
@@ -175,6 +185,7 @@ class Game:
             player.dices.clear()
             player.player_status = PlayerState.PASSIVE
         self.players[0].player_status = PlayerState.ACTIVE
+        self.touch_cup(self.players[0].player_name)
 
 
     def max_players_reached(self):
