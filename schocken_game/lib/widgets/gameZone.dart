@@ -68,8 +68,8 @@ class _GameZoneState extends State<GameZone> {
             child: RoundCounter(
               height: 0.4 * widget.gfHeight,
               width: 0.4 * widget.gfWidth * 0.618,
-              x: 1,
-              y: 1,
+            ),
+          ),
             ),
           ),
           // Positioned(
