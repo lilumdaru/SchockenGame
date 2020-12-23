@@ -11,6 +11,8 @@ class GameData {
   int maxRolls;
   bool activeCupUp;
   String gameEndMessage;
+  bool turnSixButton = false;
+  bool sendReport = false;
 
   // GameData(GameConnector myGC_in) {
   //   this.myGC = myGC_in;

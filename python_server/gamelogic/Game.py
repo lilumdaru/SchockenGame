@@ -77,6 +77,7 @@ class Game:
         if(self.max_rolls - self.active_roll == 1):
             self.active_roll = self.active_roll +1
             return
+        self.turn_six_button = False
         # roll dices until 3 dices are full
         self.count_sixer = 0
         while(len(player.dices) < 3):
@@ -112,6 +113,7 @@ class Game:
         # check if player_name is active player
         if(self.players[self.id_player_active].player_name != player_name):
             return
+        self.turn_six_button = False
         # first players sets max number of rolls for round
         if(self.id_player_active == 0):
             if(len(self.players[self.id_player_active].dices) != 3):

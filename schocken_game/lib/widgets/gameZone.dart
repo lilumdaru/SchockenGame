@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:schocken_game/widgets/turnSixButton.dart';
 import '../widgets/dice.dart';
 import '../widgets/cup.dart';
 import '../widgets/roundCounter.dart';
@@ -54,7 +55,7 @@ class _GameZoneState extends State<GameZone> {
             ),
           ),
           Positioned(
-            top: 0.2 * widget.gfHeight,
+            top: 0.25 * widget.gfHeight,
             left: 0.6 * widget.gfWidth * 0.618,
             child: Dice(
               height: 0.3 * widget.gfHeight,
@@ -70,6 +71,12 @@ class _GameZoneState extends State<GameZone> {
               width: 0.4 * widget.gfWidth * 0.618,
             ),
           ),
+          Positioned(
+            top: 0 * widget.gfHeight,
+            left: 0.5 * widget.gfWidth * 0.618,
+            child: TurnSixButton(
+              height: 0.2 * widget.gfHeight,
+              width: 0.6 * widget.gfWidth * 0.618,
             ),
           ),
           // Positioned(

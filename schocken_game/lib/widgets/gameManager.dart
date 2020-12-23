@@ -57,6 +57,12 @@ class GameManagerState extends State<GameManager> {
     updateUi(newData);
   }
 
+  void turnSix() async {
+    print("turnSix!");
+    GameData newData = await myGC.turnSix();
+    updateUi(newData);
+  }
+
   void updateUi(GameData newData) {
     if (!mounted) return;
 

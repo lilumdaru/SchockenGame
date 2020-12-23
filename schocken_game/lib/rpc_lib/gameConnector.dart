@@ -63,6 +63,15 @@ class GameConnector {
     return convertGameData(data);
   }
 
+  Future<GameData> turnSix() async {
+    RpcGameData data = await rpcTurnSix(PlayerInfo()
+      ..playerName = playerName
+      ..gameName = gameName
+      ..playerNr = playerNr
+      ..gameNr = gameNr);
+    return convertGameData(data);
+  }
+
   GameData convertGameData(RpcGameData rpcData) {
     GameData gameData = new GameData();
     gameData.gameName = gameName;
@@ -131,6 +140,8 @@ class GameConnector {
     gameData.maxRolls = rpcData.maxRolls;
     gameData.activeCupUp = rpcData.activeCupUp;
     gameData.gameEndMessage = rpcData.message;
+    gameData.turnSixButton = rpcData.buttonTurn6;
+    gameData.sendReport = rpcData.generateReport;
 
     return gameData;
   }
@@ -369,6 +380,28 @@ class GameConnector {
       final response = await stub
           .refreshGame(param)
           .timeout(Duration(seconds: 2), onTimeout: () {
+        print('0 timed out');
+        return RpcGameData()..gameStatus = RpcGameData_game_state.TIMEOUT;
+      });
+      await channel.shutdown();
+      return response;
+    } catch (e) {
+      print('Caught error: $e');
+    }
+    await channel.shutdown();
+    return RpcGameData()..gameStatus = RpcGameData_game_state.ERROR;
+  }
+
+  Future<RpcGameData> rpcTurnSix(param) async {
+    final channel = ClientChannel(
+      backendIP,
+      port: port,
+      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+    );
+    final stub = SchockenConnectorClient(channel);
+    try {
+      final response = await stub.turnSix(param).timeout(Duration(seconds: 2),
+          onTimeout: () {
         print('0 timed out');
         return RpcGameData()..gameStatus = RpcGameData_game_state.TIMEOUT;
       });
