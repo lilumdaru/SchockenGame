@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schocken_game/widgets/playerCard.dart';
 import '../rpc_lib/gameConnector.dart';
 import '../shared/gameData.dart';
 import '../shared/player.dart';
@@ -55,6 +56,10 @@ class GameManagerState extends State<GameManager> {
     print("refresh!");
     GameData newData = await myGC.refreshGame();
     updateUi(newData);
+
+    if (newData.sendReport) {
+      showReport(newData);
+    }
   }
 
   void turnSix() async {
@@ -130,6 +135,41 @@ class GameManagerState extends State<GameManager> {
               child: new Text(btnText),
               onPressed: () {
                 Navigator.popUntil(context, ModalRoute.withName('/'));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showReport(GameData newData) {
+    Widget contentData = SingleChildScrollView(
+        child: Column(children: <Widget>[
+      Text(newData.gameEndMessage),
+      ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: newData.players.length,
+          itemBuilder: (context, index) {
+            return PlayerCard(index: index, myGameData: newData);
+          })
+    ]));
+
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Ergebnisse"),
+          content: contentData,
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("OK"),
+              onPressed: () {
+                Navigator.pop(context);
               },
             ),
           ],
