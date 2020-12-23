@@ -101,15 +101,9 @@ class GameManagerState extends State<GameManager> {
     if (firstRun) {
       myGC = widget.myGC;
       myGC.setShowdialog(this._showDialog);
-      // myGameData.players.add(new Player("name1", playerStatus.ACTIVE, 5, []));
-      // myGameData.players
-      //     .add(new Player("name2", playerStatus.PASSIVE, 13, [1, 1]));
-      // myGameData.players.add(new Player("name3", playerStatus.LEFT, 2, [2]));
-      // myGameData.players
-      //     .add(new Player("name4", playerStatus.PASSIVE, 0, [2, 2, 2]));
 
-      myGameData.activePlayer =
-          new Player("name4", playerStatus.SPEC, 6, [0, 0]);
+      // fill data structure to avoid errors
+      myGameData.activePlayer = new Player("", playerStatus.ACTIVE, 0, []);
       myGameData.activeCupUp = true;
       firstRun = false;
     }

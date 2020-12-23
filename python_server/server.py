@@ -161,10 +161,6 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         else:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ERROR
 
-
-        # rpc_game_data.active_player.dice.extend([1, 2]) # todo delete later
-        # rpc_game_data.active_cup_up = True # todo delete later
-
         rpc_game_data.active_roll = gameData.active_roll
         rpc_game_data.max_rolls = gameData.max_rolls
         rpc_game_data.message = gameData.message
