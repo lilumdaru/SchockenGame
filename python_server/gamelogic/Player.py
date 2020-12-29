@@ -57,7 +57,7 @@ class Player:
             harte = 13
             points = 1
         else:
-            harte = 2
+            harte = 1
             self.dices.sort(reverse=True)
             points = self.dices[0]*100 + self.dices[1]*10 + self.dices[2]
 

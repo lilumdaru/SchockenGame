@@ -484,6 +484,6 @@ class GameConnector {
     await channel.shutdown();
     return RegistrationResponse()
       ..returnValue = 3
-      ..errorMsg = "kp...";
+      ..errorMsg = "Netzwerkproblem";
   }
 }

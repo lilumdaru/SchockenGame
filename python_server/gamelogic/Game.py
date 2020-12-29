@@ -172,17 +172,23 @@ class Game:
         index_looser = 0
         i=0
         temp_harte = 0
-        temp_points = 10000
+        temp_points_low = 10000
+        temp_points_high = 0
         player_giving = ""
         player_taking = ""
         for player in self.players:
             [harte, points] = player.calc_harte_points()
+            # find harte
             if(harte > temp_harte):
                 temp_harte = harte
+            # find winner
+            if(points > temp_points_high):
                 player_giving = player.player_name
-            if(points < temp_points):
+                temp_points_high = points
+            # find looser
+            if(points <= temp_points_low):
                 index_looser = i
-                temp_points = points
+                temp_points_low = points
                 player_taking = player.player_name
             i = i+1
         # distribute harte
@@ -190,7 +196,7 @@ class Game:
             temp_harte = self.harte_stack
         self.harte_stack = self.harte_stack - temp_harte
         self.players[index_looser].harte = self.players[index_looser].harte + temp_harte
-        self.message = player_giving + " verteilt " + str(temp_harte) + " Harte an " + player_taking + "."
+        self.message = player_giving + " verteilt " + str(temp_harte) + " Harte an " + player_taking + ". " + str(self.harte_stack ) + " Harte liegen auf dem Stapel."
 
         # change order of List, losser is first now!
         self.players = self.players[index_looser:] + self.players[:index_looser]
