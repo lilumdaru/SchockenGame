@@ -215,6 +215,10 @@ class Game:
             player.player_status = PlayerState.PASSIVE
         self.players[0].player_status = PlayerState.ACTIVE
         self.touch_cup(self.players[0].player_name)
+        
+        # reset stack
+        if(self.harte_stack == 0):
+            self.harte_stack = 13
 
 
     def max_players_reached(self):

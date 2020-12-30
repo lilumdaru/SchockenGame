@@ -20,6 +20,7 @@ class Player:
             self.dices.append(new_dice)
         harte = 0
         points = 0
+        self.dices.sort(reverse=False)
         if(self.dices.count(1) == 3): # 1 1 1
             harte = 13
             points = 999
@@ -56,6 +57,7 @@ class Player:
         elif(self.dices.count(2) == 2 and self.dices.count(1) == 1): # 2 2 1
             harte = 13
             points = 1
+            self.dices.sort(reverse=True)
         else:
             harte = 1
             self.dices.sort(reverse=True)
