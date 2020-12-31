@@ -1,4 +1,3 @@
-// import '../rpc_lib/gameConnector.dart';
 import 'player.dart';
 
 class GameData {
@@ -13,10 +12,6 @@ class GameData {
   String gameEndMessage;
   bool turnSixButton = false;
   bool sendReport = false;
-
-  // GameData(GameConnector myGC_in) {
-  //   this.myGC = myGC_in;
-  // }
 }
 
 enum gameStatus { LOBBY, STARTING, RUNNING, ENDED, TIMEOUT, ERROR }
