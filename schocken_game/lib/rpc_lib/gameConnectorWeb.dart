@@ -1,23 +1,27 @@
-import 'package:grpc/grpc.dart';
+import 'gameConnector.dart';
 import 'schocken_rpc.pb.dart';
 import 'schocken_rpc.pbgrpc.dart';
 import 'schocken_rpc.pbenum.dart';
 import '../shared/gameData.dart';
 import '../shared/player.dart';
 
-class GameConnector {
+import 'package:grpc/grpc_web.dart';
+
+class GameConnectorWeb extends GameConnector {
   int gameNr = -10;
   String gameName = "";
   String playerName = "";
   int playerNr = 0;
   Function _showDialog;
   bool registered = false;
-  final backendIP = 'localhost'; // host
-  final port = 50051;
+  final backendIP = 'localhost'; // local
+
+  final port = 8080;
   int timeout = 0;
 
-  GameConnector() {
-    print("init base GC");
+  GameConnectorWeb(Function showDialog) {
+    print("init GC");
+    this._showDialog = showDialog;
   }
 
   void setShowdialog(Function showDialog) {
@@ -121,6 +125,7 @@ class GameConnector {
             this._showDialog(title, text, btnText);
           } else {
             timeout++;
+            print(timeout);
           }
         }
         break;
@@ -131,6 +136,8 @@ class GameConnector {
     } // end switch
 
     gameData.activePlayer = convertPlayerData(rpcData.activePlayer);
+    print(
+        "gameData.activePlayer.dice: " + gameData.activePlayer.dice.toString());
     gameData.activeRoll = rpcData.activeRoll;
     gameData.maxRolls = rpcData.maxRolls;
     gameData.activeCupUp = rpcData.activeCupUp;
@@ -273,11 +280,8 @@ class GameConnector {
   }
 
   Future<StartGameResponse> rpcStartGame(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
     try {
       final response = await stub.startGame(param).timeout(Duration(seconds: 2),
@@ -299,11 +303,8 @@ class GameConnector {
   }
 
   Future<RpcGameData> rpcTouchDice(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
     try {
       final response = await stub.touchDice(param).timeout(Duration(seconds: 2),
@@ -321,11 +322,8 @@ class GameConnector {
   }
 
   Future<RpcGameData> rpcTouchCup(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
     try {
       final response = await stub.touchCup(param).timeout(Duration(seconds: 2),
@@ -343,11 +341,8 @@ class GameConnector {
   }
 
   Future<RpcGameData> rpcEndTurn(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
     try {
       final response = await stub.endTurn(param).timeout(Duration(seconds: 2),
@@ -365,11 +360,8 @@ class GameConnector {
   }
 
   Future<RpcGameData> rpcRefreshGame(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
     try {
       final response = await stub
@@ -388,11 +380,8 @@ class GameConnector {
   }
 
   Future<RpcGameData> rpcTurnSix(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
     try {
       final response = await stub.turnSix(param).timeout(Duration(seconds: 2),
@@ -410,11 +399,8 @@ class GameConnector {
   }
 
   Future<PlayerList> rpcGetPlayerList(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
     try {
       final response = await stub
@@ -433,12 +419,10 @@ class GameConnector {
   }
 
   Future<GameID> rpcRegisterGame(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
+    print('428');
     try {
       final response = await stub
           .registerGame(param)
@@ -451,16 +435,15 @@ class GameConnector {
     } catch (e) {
       print('Caught error: $e');
     }
+
+    print('442');
     await channel.shutdown();
     return GameID()..gameNr = 0;
   }
 
   Future<RegistrationResponse> rpcRegisterPlayer(param) async {
-    final channel = ClientChannel(
-      backendIP,
-      port: port,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    );
+    final channel = GrpcWebClientChannel.xhr(
+        Uri.parse('http://' + backendIP + ':' + port.toString() + '/'));
     final stub = SchockenConnectorClient(channel);
     try {
       final response = await stub

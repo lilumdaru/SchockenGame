@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:schocken_game/rpc_lib/gameConnectorMobile.dart';
+import 'package:schocken_game/rpc_lib/gameConnectorWeb.dart';
 import 'dart:async';
 import '../rpc_lib/gameConnector.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LobbyClient extends StatefulWidget {
   @override
@@ -20,7 +23,11 @@ class _LobbyClientState extends State<LobbyClient> {
   void initState() {
     super.initState();
     gameStatus = "";
-    this.myGC = new GameConnector(_showDialog);
+    if (kIsWeb) {
+      this.myGC = new GameConnectorWeb(_showDialog);
+    } else {
+      this.myGC = new GameConnectorMobile(_showDialog);
+    }
     timer = Timer.periodic(Duration(milliseconds: refreshIntervall),
         (Timer t) => getNewPlayerlist());
   }
@@ -48,7 +55,7 @@ class _LobbyClientState extends State<LobbyClient> {
     data = ModalRoute.of(context).settings.arguments;
     gameName = data["gameName"].toUpperCase();
     if (myGC.gameNr == -10) {
-      // print("try registerPlayer");
+      // try registerPlayer
       myGC.gameNr = -9; // assume registration failed
       this.myGC.registerPlayer(data["playerName"], data["gameName"]);
       this.myGC.gameName = gameName;
@@ -117,8 +124,7 @@ class _LobbyClientState extends State<LobbyClient> {
   }
 
   void _showDialog(String title, String text, String btnText) {
-    // flutter defined function
-    print("showError");
+    // showError
     showDialog(
       context: context,
       builder: (BuildContext context) {

@@ -1,23 +1,25 @@
 import 'package:grpc/grpc.dart';
+import 'gameConnector.dart';
 import 'schocken_rpc.pb.dart';
 import 'schocken_rpc.pbgrpc.dart';
 import 'schocken_rpc.pbenum.dart';
 import '../shared/gameData.dart';
 import '../shared/player.dart';
 
-class GameConnector {
+class GameConnectorMobile extends GameConnector {
   int gameNr = -10;
   String gameName = "";
   String playerName = "";
   int playerNr = 0;
   Function _showDialog;
   bool registered = false;
-  final backendIP = 'localhost'; // host
+  final backendIP = 'localhost';
   final port = 50051;
   int timeout = 0;
 
-  GameConnector() {
-    print("init base GC");
+  GameConnectorMobile(Function showDialog) {
+    print("init GC");
+    this._showDialog = showDialog;
   }
 
   void setShowdialog(Function showDialog) {
@@ -121,6 +123,7 @@ class GameConnector {
             this._showDialog(title, text, btnText);
           } else {
             timeout++;
+            print(timeout);
           }
         }
         break;
@@ -131,6 +134,8 @@ class GameConnector {
     } // end switch
 
     gameData.activePlayer = convertPlayerData(rpcData.activePlayer);
+    print(
+        "gameData.activePlayer.dice: " + gameData.activePlayer.dice.toString());
     gameData.activeRoll = rpcData.activeRoll;
     gameData.maxRolls = rpcData.maxRolls;
     gameData.activeCupUp = rpcData.activeCupUp;

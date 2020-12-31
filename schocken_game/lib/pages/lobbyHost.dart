@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:schocken_game/rpc_lib/gameConnectorMobile.dart';
+import 'package:schocken_game/rpc_lib/gameConnectorWeb.dart';
 import 'dart:async';
 import '../rpc_lib/gameConnector.dart';
 
@@ -20,7 +23,11 @@ class _LobbyHostState extends State<LobbyHost> {
   @override
   void initState() {
     super.initState();
-    this.myGC = new GameConnector(_showDialog);
+    if (kIsWeb) {
+      this.myGC = new GameConnectorWeb(_showDialog);
+    } else {
+      this.myGC = new GameConnectorMobile(_showDialog);
+    }
     timer = Timer.periodic(Duration(milliseconds: refreshIntervall),
         (Timer t) => getNewPlayerlist());
   }
@@ -42,7 +49,6 @@ class _LobbyHostState extends State<LobbyHost> {
   }
 
   updateGameName(gameName) {
-    print("Spielname: " + gameName);
     if (!mounted) return;
     setState(() => this.gameName = gameName.toUpperCase());
   }
