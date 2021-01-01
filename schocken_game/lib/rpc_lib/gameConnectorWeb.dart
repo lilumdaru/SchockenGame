@@ -4,8 +4,9 @@ import 'schocken_rpc.pbgrpc.dart';
 import 'schocken_rpc.pbenum.dart';
 import '../shared/gameData.dart';
 import '../shared/player.dart';
-
 import 'package:grpc/grpc_web.dart';
+
+GameConnector getGameConnector() => GameConnectorWeb();
 
 class GameConnectorWeb extends GameConnector {
   int gameNr = -10;
@@ -19,9 +20,8 @@ class GameConnectorWeb extends GameConnector {
   final port = 8080;
   int timeout = 0;
 
-  GameConnectorWeb(Function showDialog) {
-    print("init GC");
-    this._showDialog = showDialog;
+  GameConnectorWeb() {
+    print("init web GC");
   }
 
   void setShowdialog(Function showDialog) {

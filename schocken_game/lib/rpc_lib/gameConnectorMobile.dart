@@ -6,6 +6,8 @@ import 'schocken_rpc.pbenum.dart';
 import '../shared/gameData.dart';
 import '../shared/player.dart';
 
+GameConnector getGameConnector() => GameConnectorMobile();
+
 class GameConnectorMobile extends GameConnector {
   int gameNr = -10;
   String gameName = "";
@@ -17,9 +19,8 @@ class GameConnectorMobile extends GameConnector {
   final port = 50051;
   int timeout = 0;
 
-  GameConnectorMobile(Function showDialog) {
-    print("init GC");
-    this._showDialog = showDialog;
+  GameConnectorMobile() {
+    print("init mobile GC");
   }
 
   void setShowdialog(Function showDialog) {

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:schocken_game/rpc_lib/gameConnectorMobile.dart';
-import 'package:schocken_game/rpc_lib/gameConnectorWeb.dart';
 import 'dart:async';
 import '../rpc_lib/gameConnector.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LobbyClient extends StatefulWidget {
   @override
@@ -23,11 +20,8 @@ class _LobbyClientState extends State<LobbyClient> {
   void initState() {
     super.initState();
     gameStatus = "";
-    if (kIsWeb) {
-      this.myGC = new GameConnectorWeb(_showDialog);
-    } else {
-      this.myGC = new GameConnectorMobile(_showDialog);
-    }
+    this.myGC = GameConnector.instance;
+    this.myGC.setShowdialog(_showDialog);
     timer = Timer.periodic(Duration(milliseconds: refreshIntervall),
         (Timer t) => getNewPlayerlist());
   }
