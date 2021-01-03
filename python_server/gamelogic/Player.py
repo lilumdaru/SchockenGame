@@ -1,6 +1,7 @@
 from MyEnums import PlayerState
 
 import random
+import time
 random.seed()
 
 
@@ -11,7 +12,7 @@ class Player:
         self.player_status = PlayerState.UNINITIALIZED
         self.harte = 0
         self.dices = []
-        self.last_action = 0  # or use timestamp compatible datatyp
+        self.last_action = time.time()  # or use timestamp compatible datatyp
 
     # see docu in excel file
     def calc_harte_points(self):

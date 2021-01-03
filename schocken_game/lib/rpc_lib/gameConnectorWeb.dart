@@ -15,9 +15,8 @@ class GameConnectorWeb extends GameConnector {
   int playerNr = 0;
   Function _showDialog;
   bool registered = false;
-  final backendIP = 'localhost'; // local
-
-  final port = 8080;
+  String backendIP = 'localhost'; // local
+  int port = 8080;
   int timeout = 0;
 
   GameConnectorWeb() {
@@ -175,9 +174,9 @@ class GameConnectorWeb extends GameConnector {
   Future<void> getPlayerList(Function updateLobby) async {
     if (this.registered == true) {
       PlayerList playerList;
-      playerList = await rpcGetPlayerList(GameID()
-        ..gameNr = this.gameNr
-        ..gameName = this.gameName);
+      playerList = await rpcGetPlayerList(PlayerInfo()
+        ..playerName = playerName
+        ..gameName = gameName);
       if (playerList.status == PlayerList_state.LOBBY) {
         // update Playerlist
         print("call Funktion to update playerlist");

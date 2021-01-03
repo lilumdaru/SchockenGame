@@ -12,14 +12,17 @@ abstract class GameConnector {
   String playerName = "";
   int playerNr = 0;
   bool registered = false;
-  final backendIP = 'localhost'; // host
-  final port = 50051;
+  String backendIP = 'localhost'; // host
+  int port = 50051;
   int timeout = 0;
 
   static GameConnector _instance;
 
   static GameConnector get instance {
     _instance ??= getGameConnector();
+    _instance.gameNr = -10;
+    _instance.gameName = "";
+    _instance.registered = false;
     return _instance;
   }
 

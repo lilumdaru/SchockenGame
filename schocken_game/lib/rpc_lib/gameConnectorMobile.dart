@@ -15,8 +15,8 @@ class GameConnectorMobile extends GameConnector {
   int playerNr = 0;
   Function _showDialog;
   bool registered = false;
-  final backendIP = 'localhost';
-  final port = 50051;
+  String backendIP = 'localhost';
+  int port = 50051;
   int timeout = 0;
 
   GameConnectorMobile() {

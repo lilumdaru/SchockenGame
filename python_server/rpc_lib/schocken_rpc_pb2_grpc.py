@@ -28,7 +28,7 @@ class SchockenConnectorStub(object):
                 )
         self.getPlayerList = channel.unary_unary(
                 '/SchockenConnector/getPlayerList',
-                request_serializer=rpc__lib_dot_schocken__rpc__pb2.GameID.SerializeToString,
+                request_serializer=rpc__lib_dot_schocken__rpc__pb2.PlayerInfo.SerializeToString,
                 response_deserializer=rpc__lib_dot_schocken__rpc__pb2.PlayerList.FromString,
                 )
         self.registerGame = channel.unary_unary(
@@ -148,7 +148,7 @@ def add_SchockenConnectorServicer_to_server(servicer, server):
             ),
             'getPlayerList': grpc.unary_unary_rpc_method_handler(
                     servicer.getPlayerList,
-                    request_deserializer=rpc__lib_dot_schocken__rpc__pb2.GameID.FromString,
+                    request_deserializer=rpc__lib_dot_schocken__rpc__pb2.PlayerInfo.FromString,
                     response_serializer=rpc__lib_dot_schocken__rpc__pb2.PlayerList.SerializeToString,
             ),
             'registerGame': grpc.unary_unary_rpc_method_handler(
@@ -230,7 +230,7 @@ class SchockenConnector(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/SchockenConnector/getPlayerList',
-            rpc__lib_dot_schocken__rpc__pb2.GameID.SerializeToString,
+            rpc__lib_dot_schocken__rpc__pb2.PlayerInfo.SerializeToString,
             rpc__lib_dot_schocken__rpc__pb2.PlayerList.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

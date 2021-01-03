@@ -20,10 +20,11 @@ class SchockenConnectorClient extends $grpc.Client {
           ($0.PlayerInfo value) => value.writeToBuffer(),
           ($core.List<$core.int> value) =>
               $0.RegistrationResponse.fromBuffer(value));
-  static final _$getPlayerList = $grpc.ClientMethod<$0.GameID, $0.PlayerList>(
-      '/SchockenConnector/getPlayerList',
-      ($0.GameID value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.PlayerList.fromBuffer(value));
+  static final _$getPlayerList =
+      $grpc.ClientMethod<$0.PlayerInfo, $0.PlayerList>(
+          '/SchockenConnector/getPlayerList',
+          ($0.PlayerInfo value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.PlayerList.fromBuffer(value));
   static final _$registerGame = $grpc.ClientMethod<$0.PlayerInfo, $0.GameID>(
       '/SchockenConnector/registerGame',
       ($0.PlayerInfo value) => value.writeToBuffer(),
@@ -69,7 +70,7 @@ class SchockenConnectorClient extends $grpc.Client {
     return $grpc.ResponseFuture(call);
   }
 
-  $grpc.ResponseFuture<$0.PlayerList> getPlayerList($0.GameID request,
+  $grpc.ResponseFuture<$0.PlayerList> getPlayerList($0.PlayerInfo request,
       {$grpc.CallOptions options}) {
     final call = $createCall(
         _$getPlayerList, $async.Stream.fromIterable([request]),
@@ -140,12 +141,12 @@ abstract class SchockenConnectorServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.PlayerInfo.fromBuffer(value),
         ($0.RegistrationResponse value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.GameID, $0.PlayerList>(
+    $addMethod($grpc.ServiceMethod<$0.PlayerInfo, $0.PlayerList>(
         'getPlayerList',
         getPlayerList_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $0.GameID.fromBuffer(value),
+        ($core.List<$core.int> value) => $0.PlayerInfo.fromBuffer(value),
         ($0.PlayerList value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.PlayerInfo, $0.GameID>(
         'registerGame',
@@ -204,7 +205,7 @@ abstract class SchockenConnectorServiceBase extends $grpc.Service {
   }
 
   $async.Future<$0.PlayerList> getPlayerList_Pre(
-      $grpc.ServiceCall call, $async.Future<$0.GameID> request) async {
+      $grpc.ServiceCall call, $async.Future<$0.PlayerInfo> request) async {
     return getPlayerList(call, await request);
   }
 
@@ -246,7 +247,7 @@ abstract class SchockenConnectorServiceBase extends $grpc.Service {
   $async.Future<$0.RegistrationResponse> registerPlayer(
       $grpc.ServiceCall call, $0.PlayerInfo request);
   $async.Future<$0.PlayerList> getPlayerList(
-      $grpc.ServiceCall call, $0.GameID request);
+      $grpc.ServiceCall call, $0.PlayerInfo request);
   $async.Future<$0.GameID> registerGame(
       $grpc.ServiceCall call, $0.PlayerInfo request);
   $async.Future<$0.StartGameResponse> startGame(

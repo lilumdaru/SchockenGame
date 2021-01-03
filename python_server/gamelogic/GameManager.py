@@ -11,6 +11,7 @@ from MyEnums import GameState
 from Logger import Logger
 import random
 import string
+import time
 
 logger = Logger()
 
@@ -49,6 +50,7 @@ class GameManager:
 
 
     def register_player(self, game_name, player_name):
+        self.cleanup()
         # if game exists in dict
         if(not self.game_name_exist(game_name)):
             return self.return_error("Game name doesn't exist!")
@@ -72,7 +74,7 @@ class GameManager:
         return self.games[game_name]
 
 
-    def get_player_list(self, game_name):
+    def get_player_list(self, game_name, player_name):
         # if game exists in dict
         if(not self.game_name_exist(game_name)):
             return self.return_error("Game name doesn't exist!")
@@ -82,6 +84,9 @@ class GameManager:
 
         # Reset Timestamp
         self.touch_game(game_name)
+
+        self.games[game_name].touch_player(player_name)
+        self.games[game_name].cleanup()
 
         # return PlayerList Data
         return self.games[game_name]
@@ -160,22 +165,20 @@ class GameManager:
 
     def cleanup(self):
         # check all games and delete idle games.
-        #TODO
-        pass
+        games_to_del = []
+        for game_name in self.games:
+            game = self.games[game_name]
+            if(time.time() > game.last_action + 10):
+                games_to_del.append(game_name)
 
+        for game_name in games_to_del:
+            del self.games[game_name]
 
     def touch_game(self, game_name):
-        # if GameName exists, save current timestamp inside
-        #TODO
-        pass
-
-
-    # def return_game(self, game_name):
-    #     # if GameName exists, return game
-    #     if(self.game_name_exist(game_name)):
-    #         return self.games[game_name]
-    #     else:
-    #         return self.return_error("Game name doesn't exist!")
+        # if GameName exists, save current last_action inside
+        if(not self.game_name_exist(game_name)):
+            return
+        self.games[game_name].last_action = time.time()
 
 
     def game_name_exist(self, game_name):

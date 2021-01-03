@@ -14,7 +14,7 @@ service SchockenConnector {
   // Services called from Lobby:
   rpc registerPlayer(PlayerInfo) returns (RegistrationResponse) {}
   // 
-  rpc getPlayerList(GameID) returns (PlayerList) {}
+  rpc getPlayerList(PlayerInfo) returns (PlayerList) {}
   // Host opening a new Game
   rpc registerGame(PlayerInfo) returns (GameID) {}
   // host action to Start the Game

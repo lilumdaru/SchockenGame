@@ -48,12 +48,10 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
     def getPlayerList(self, request, context):
         logger.log("getPlayerList request. GameNr: " +
               str(request.game_nr) + " GameName: " + request.game_name)
-        GameData = self.GM.get_player_list(request.game_name.upper())
+        GameData = self.GM.get_player_list(request.game_name.upper(), request.player_name)
         
         player_list = schocken_rpc_pb2.PlayerList()
 
-        logger.log("GameData.game_status: " + str( GameData.game_status) )
-        
         if(GameData.game_status == GameState.LOBBY):
             player_list.status = schocken_rpc_pb2.PlayerList.state.LOBBY
         elif(GameData.game_status == GameState.STARTING):
@@ -64,9 +62,6 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         for player in GameData.players:
             player_list.player_names.append(player.player_name)
             
-        logger.log("player_list.status: " + str( player_list.status) )
-
-        # logger.log("player_list.player_names: " + player_list.player_names)
         return player_list
 
     def startGame(self, request, context):

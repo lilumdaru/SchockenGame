@@ -1,6 +1,7 @@
 from MyEnums import GameState, PlayerState
 from Player import Player
 import random
+import time
 
 random.seed()
 
@@ -230,11 +231,20 @@ class Game:
 
     def cleanup(self):
         # check all players and delete idle players.
-        #TODO
-        pass
+        players_to_del = []
+        for player in self.players:
+            if(time.time() > player.last_action + 10):
+                players_to_del.append(player)
+
+        for player in players_to_del:
+            if(player.player_status == PlayerState.ACTIVE):
+                self.end_turn(player.player_name)
+            self.players.remove(player)
 
 
     def touch_player(self, player_name):
         # if playername exists, save current timestamp inside
-        #TODO
-        pass
+        for player in self.players:
+            if (player.player_name == player_name):
+                player.last_action = time.time()
+                break
