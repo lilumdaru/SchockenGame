@@ -174,9 +174,9 @@ class GameConnectorMobile extends GameConnector {
   Future<void> getPlayerList(Function updateLobby) async {
     if (this.registered == true) {
       PlayerList playerList;
-      playerList = await rpcGetPlayerList(GameID()
-        ..gameNr = this.gameNr
-        ..gameName = this.gameName);
+      playerList = await rpcGetPlayerList(PlayerInfo()
+        ..playerName = playerName
+        ..gameName = gameName);
       if (playerList.status == PlayerList_state.LOBBY) {
         // update Playerlist
         print("call Funktion to update playerlist");
