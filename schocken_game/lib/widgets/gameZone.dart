@@ -5,6 +5,7 @@ import '../widgets/dice.dart';
 import '../widgets/cup.dart';
 import '../widgets/roundCounter.dart';
 import '../widgets/gameManager.dart';
+import 'discStack.dart';
 
 class GameZone extends StatefulWidget {
   const GameZone({
@@ -67,8 +68,16 @@ class _GameZoneState extends State<GameZone> {
             top: 0.05 * widget.gfHeight,
             right: 0.05 * widget.gfWidth * 0.618,
             child: RoundCounter(
-              height: 0.4 * widget.gfHeight,
-              width: 0.4 * widget.gfWidth * 0.618,
+              height: 0.3 * widget.gfHeight,
+              width: 0.3 * widget.gfWidth * 0.618,
+            ),
+          ),
+          Positioned(
+            top: 0.40 * widget.gfHeight,
+            right: 0.05 * widget.gfWidth * 0.618,
+            child: DiscStack(
+              height: 0.3 * widget.gfHeight,
+              width: 0.3 * widget.gfWidth * 0.618,
             ),
           ),
           Positioned(

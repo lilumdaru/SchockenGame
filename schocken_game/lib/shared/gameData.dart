@@ -12,6 +12,7 @@ class GameData {
   String gameEndMessage;
   bool turnSixButton = false;
   bool sendReport = false;
+  int discsOnStack = 0;
 }
 
 enum gameStatus { LOBBY, STARTING, RUNNING, ENDED, TIMEOUT, ERROR }

@@ -143,6 +143,7 @@ class GameConnectorWeb extends GameConnector {
     gameData.gameEndMessage = rpcData.message;
     gameData.turnSixButton = rpcData.buttonTurn6;
     gameData.sendReport = rpcData.generateReport;
+    gameData.discsOnStack = rpcData.discsOnStack;
 
     return gameData;
   }
@@ -258,7 +259,7 @@ class GameConnectorWeb extends GameConnector {
   }
 
   Future<void> startGame() async {
-    print("registerPlayer");
+    print("start Game");
     StartGameResponse startRes;
     startRes = await rpcStartGame(GameID()..gameName = gameName);
 

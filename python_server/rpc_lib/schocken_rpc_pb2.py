@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1arpc_lib/schocken_rpc.proto\"X\n\nPlayerInfo\x12\x13\n\x0bplayer_name\x18\x01 \x01(\t\x12\x11\n\tgame_name\x18\x02 \x01(\t\x12\x11\n\tplayer_nr\x18\x03 \x01(\x05\x12\x0f\n\x07game_nr\x18\x04 \x01(\x05\"c\n\x14RegistrationResponse\x12\x14\n\x0creturn_value\x18\x01 \x01(\x05\x12\x11\n\tplayer_nr\x18\x02 \x01(\x05\x12\x0f\n\x07game_nr\x18\x03 \x01(\x05\x12\x11\n\terror_msg\x18\x04 \x01(\t\"?\n\x06GameID\x12\x11\n\tgame_name\x18\x01 \x01(\t\x12\x0f\n\x07game_nr\x18\x02 \x01(\x05\x12\x11\n\terror_msg\x18\x03 \x01(\t\"\x97\x01\n\nPlayerList\x12\x14\n\x0cplayer_names\x18\x01 \x03(\t\x12!\n\x06status\x18\x02 \x01(\x0e\x32\x11.PlayerList.state\"P\n\x05state\x12\t\n\x05LOBBY\x10\x00\x12\x0c\n\x08STARTING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\t\n\x05\x45NDED\x10\x03\x12\x0b\n\x07TIMEOUT\x10\x04\x12\t\n\x05\x45RROR\x10\x05\"\x07\n\x05\x45mpty\"<\n\x11StartGameResponse\x12\x14\n\x0creturn_value\x18\x01 \x01(\x05\x12\x11\n\terror_msg\x18\x02 \x01(\t\"j\n\x0b\x44iceTouched\x12\x0f\n\x07\x64ice_id\x18\x01 \x01(\x05\x12\x11\n\tplayer_nr\x18\x02 \x01(\x05\x12\x0f\n\x07game_nr\x18\x03 \x01(\x05\x12\x11\n\tgame_name\x18\x04 \x01(\t\x12\x13\n\x0bplayer_name\x18\x05 \x01(\t\"\xe5\x02\n\x0bRpcGameData\x12\x11\n\tgame_name\x18\x01 \x01(\t\x12\x1b\n\x07players\x18\x02 \x03(\x0b\x32\n.RpcPlayer\x12,\n\x0bgame_status\x18\x03 \x01(\x0e\x32\x17.RpcGameData.game_state\x12!\n\ractive_player\x18\x04 \x01(\x0b\x32\n.RpcPlayer\x12\x13\n\x0b\x61\x63tive_roll\x18\x05 \x01(\x05\x12\x11\n\tmax_rolls\x18\x06 \x01(\x05\x12\x15\n\ractive_cup_up\x18\x07 \x01(\x08\x12\x0f\n\x07message\x18\x08 \x01(\t\x12\x15\n\rbutton_turn_6\x18\t \x01(\x08\x12\x17\n\x0fgenerate_report\x18\n \x01(\x08\"U\n\ngame_state\x12\t\n\x05LOBBY\x10\x00\x12\x0c\n\x08STARTING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\t\n\x05\x45NDED\x10\x03\x12\x0b\n\x07TIMEOUT\x10\x04\x12\t\n\x05\x45RROR\x10\x05\"\xb5\x01\n\tRpcPlayer\x12\x13\n\x0bplayer_name\x18\x01 \x01(\t\x12.\n\rplayer_status\x18\x02 \x01(\x0e\x32\x17.RpcPlayer.player_state\x12\r\n\x05harte\x18\x03 \x01(\x05\x12\x0c\n\x04\x64ice\x18\x04 \x03(\x05\"F\n\x0cplayer_state\x12\n\n\x06\x41\x43TIVE\x10\x00\x12\x0b\n\x07PASSIVE\x10\x01\x12\x08\n\x04SPEC\x10\x02\x12\x08\n\x04LEFT\x10\x03\x12\t\n\x05OTHER\x10\x04\x32\x9c\x03\n\x11SchockenConnector\x12\x36\n\x0eregisterPlayer\x12\x0b.PlayerInfo\x1a\x15.RegistrationResponse\"\x00\x12+\n\rgetPlayerList\x12\x0b.PlayerInfo\x1a\x0b.PlayerList\"\x00\x12&\n\x0cregisterGame\x12\x0b.PlayerInfo\x1a\x07.GameID\"\x00\x12*\n\tstartGame\x12\x07.GameID\x1a\x12.StartGameResponse\"\x00\x12)\n\ttouchDice\x12\x0c.DiceTouched\x1a\x0c.RpcGameData\"\x00\x12\'\n\x08touchCup\x12\x0b.PlayerInfo\x1a\x0c.RpcGameData\"\x00\x12&\n\x07turnSix\x12\x0b.PlayerInfo\x1a\x0c.RpcGameData\"\x00\x12&\n\x07\x65ndTurn\x12\x0b.PlayerInfo\x1a\x0c.RpcGameData\"\x00\x12*\n\x0brefreshGame\x12\x0b.PlayerInfo\x1a\x0c.RpcGameData\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x1arpc_lib/schocken_rpc.proto\"X\n\nPlayerInfo\x12\x13\n\x0bplayer_name\x18\x01 \x01(\t\x12\x11\n\tgame_name\x18\x02 \x01(\t\x12\x11\n\tplayer_nr\x18\x03 \x01(\x05\x12\x0f\n\x07game_nr\x18\x04 \x01(\x05\"c\n\x14RegistrationResponse\x12\x14\n\x0creturn_value\x18\x01 \x01(\x05\x12\x11\n\tplayer_nr\x18\x02 \x01(\x05\x12\x0f\n\x07game_nr\x18\x03 \x01(\x05\x12\x11\n\terror_msg\x18\x04 \x01(\t\"?\n\x06GameID\x12\x11\n\tgame_name\x18\x01 \x01(\t\x12\x0f\n\x07game_nr\x18\x02 \x01(\x05\x12\x11\n\terror_msg\x18\x03 \x01(\t\"\x97\x01\n\nPlayerList\x12\x14\n\x0cplayer_names\x18\x01 \x03(\t\x12!\n\x06status\x18\x02 \x01(\x0e\x32\x11.PlayerList.state\"P\n\x05state\x12\t\n\x05LOBBY\x10\x00\x12\x0c\n\x08STARTING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\t\n\x05\x45NDED\x10\x03\x12\x0b\n\x07TIMEOUT\x10\x04\x12\t\n\x05\x45RROR\x10\x05\"\x07\n\x05\x45mpty\"<\n\x11StartGameResponse\x12\x14\n\x0creturn_value\x18\x01 \x01(\x05\x12\x11\n\terror_msg\x18\x02 \x01(\t\"j\n\x0b\x44iceTouched\x12\x0f\n\x07\x64ice_id\x18\x01 \x01(\x05\x12\x11\n\tplayer_nr\x18\x02 \x01(\x05\x12\x0f\n\x07game_nr\x18\x03 \x01(\x05\x12\x11\n\tgame_name\x18\x04 \x01(\t\x12\x13\n\x0bplayer_name\x18\x05 \x01(\t\"\xfd\x02\n\x0bRpcGameData\x12\x11\n\tgame_name\x18\x01 \x01(\t\x12\x1b\n\x07players\x18\x02 \x03(\x0b\x32\n.RpcPlayer\x12,\n\x0bgame_status\x18\x03 \x01(\x0e\x32\x17.RpcGameData.game_state\x12!\n\ractive_player\x18\x04 \x01(\x0b\x32\n.RpcPlayer\x12\x13\n\x0b\x61\x63tive_roll\x18\x05 \x01(\x05\x12\x11\n\tmax_rolls\x18\x06 \x01(\x05\x12\x15\n\ractive_cup_up\x18\x07 \x01(\x08\x12\x0f\n\x07message\x18\x08 \x01(\t\x12\x15\n\rbutton_turn_6\x18\t \x01(\x08\x12\x17\n\x0fgenerate_report\x18\n \x01(\x08\x12\x16\n\x0e\x64iscs_on_stack\x18\x0b \x01(\x05\"U\n\ngame_state\x12\t\n\x05LOBBY\x10\x00\x12\x0c\n\x08STARTING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\t\n\x05\x45NDED\x10\x03\x12\x0b\n\x07TIMEOUT\x10\x04\x12\t\n\x05\x45RROR\x10\x05\"\xb5\x01\n\tRpcPlayer\x12\x13\n\x0bplayer_name\x18\x01 \x01(\t\x12.\n\rplayer_status\x18\x02 \x01(\x0e\x32\x17.RpcPlayer.player_state\x12\r\n\x05harte\x18\x03 \x01(\x05\x12\x0c\n\x04\x64ice\x18\x04 \x03(\x05\"F\n\x0cplayer_state\x12\n\n\x06\x41\x43TIVE\x10\x00\x12\x0b\n\x07PASSIVE\x10\x01\x12\x08\n\x04SPEC\x10\x02\x12\x08\n\x04LEFT\x10\x03\x12\t\n\x05OTHER\x10\x04\x32\x9c\x03\n\x11SchockenConnector\x12\x36\n\x0eregisterPlayer\x12\x0b.PlayerInfo\x1a\x15.RegistrationResponse\"\x00\x12+\n\rgetPlayerList\x12\x0b.PlayerInfo\x1a\x0b.PlayerList\"\x00\x12&\n\x0cregisterGame\x12\x0b.PlayerInfo\x1a\x07.GameID\"\x00\x12*\n\tstartGame\x12\x07.GameID\x1a\x12.StartGameResponse\"\x00\x12)\n\ttouchDice\x12\x0c.DiceTouched\x1a\x0c.RpcGameData\"\x00\x12\'\n\x08touchCup\x12\x0b.PlayerInfo\x1a\x0c.RpcGameData\"\x00\x12&\n\x07turnSix\x12\x0b.PlayerInfo\x1a\x0c.RpcGameData\"\x00\x12&\n\x07\x65ndTurn\x12\x0b.PlayerInfo\x1a\x0c.RpcGameData\"\x00\x12*\n\x0brefreshGame\x12\x0b.PlayerInfo\x1a\x0c.RpcGameData\"\x00\x62\x06proto3'
 )
 
 
@@ -109,8 +109,8 @@ _RPCGAMEDATA_GAME_STATE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=892,
-  serialized_end=977,
+  serialized_start=916,
+  serialized_end=1001,
 )
 _sym_db.RegisterEnumDescriptor(_RPCGAMEDATA_GAME_STATE)
 
@@ -149,8 +149,8 @@ _RPCPLAYER_PLAYER_STATE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1091,
-  serialized_end=1161,
+  serialized_start=1115,
+  serialized_end=1185,
 )
 _sym_db.RegisterEnumDescriptor(_RPCPLAYER_PLAYER_STATE)
 
@@ -549,6 +549,13 @@ _RPCGAMEDATA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='discs_on_stack', full_name='RpcGameData.discs_on_stack', index=10,
+      number=11, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -563,7 +570,7 @@ _RPCGAMEDATA = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=620,
-  serialized_end=977,
+  serialized_end=1001,
 )
 
 
@@ -616,8 +623,8 @@ _RPCPLAYER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=980,
-  serialized_end=1161,
+  serialized_start=1004,
+  serialized_end=1185,
 )
 
 _PLAYERLIST.fields_by_name['status'].enum_type = _PLAYERLIST_STATE
@@ -711,8 +718,8 @@ _SCHOCKENCONNECTOR = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1164,
-  serialized_end=1576,
+  serialized_start=1188,
+  serialized_end=1600,
   methods=[
   _descriptor.MethodDescriptor(
     name='registerPlayer',

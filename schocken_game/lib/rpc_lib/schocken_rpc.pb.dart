@@ -366,6 +366,7 @@ class RpcGameData extends $pb.GeneratedMessage {
     ..aOS(8, 'message')
     ..aOB(9, 'buttonTurn6', protoName: 'button_turn_6')
     ..aOB(10, 'generateReport')
+    ..a<$core.int>(11, 'discsOnStack', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -469,6 +470,15 @@ class RpcGameData extends $pb.GeneratedMessage {
   $core.bool hasGenerateReport() => $_has(9);
   @$pb.TagNumber(10)
   void clearGenerateReport() => clearField(10);
+
+  @$pb.TagNumber(11)
+  $core.int get discsOnStack => $_getIZ(10);
+  @$pb.TagNumber(11)
+  set discsOnStack($core.int v) { $_setSignedInt32(10, v); }
+  @$pb.TagNumber(11)
+  $core.bool hasDiscsOnStack() => $_has(10);
+  @$pb.TagNumber(11)
+  void clearDiscsOnStack() => clearField(11);
 }
 
 class RpcPlayer extends $pb.GeneratedMessage {

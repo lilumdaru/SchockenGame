@@ -161,6 +161,7 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         rpc_game_data.message = gameData.message
         rpc_game_data.button_turn_6 = gameData.turn_six_button
         rpc_game_data.generate_report = gameData.send_report
+        rpc_game_data.discs_on_stack = gameData.harte_stack
 
         return rpc_game_data
 

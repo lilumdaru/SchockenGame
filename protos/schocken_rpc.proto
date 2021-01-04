@@ -90,6 +90,7 @@ message RpcGameData {
   string message = 8;
   bool button_turn_6 = 9;
   bool generate_report = 10;
+  int32 discs_on_stack = 11;
 
   enum game_state {
     LOBBY = 0;
