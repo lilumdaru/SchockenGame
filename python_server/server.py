@@ -46,8 +46,8 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         return reg_res
 
     def getPlayerList(self, request, context):
-        logger.log("getPlayerList request. GameNr: " +
-              str(request.game_nr) + " GameName: " + request.game_name)
+        # logger.log("getPlayerList request. GameNr: " +
+        #       str(request.game_nr) + " GameName: " + request.game_name)
         GameData = self.GM.get_player_list(request.game_name.upper(), request.player_name)
         
         player_list = schocken_rpc_pb2.PlayerList()
@@ -58,7 +58,6 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
             player_list.status = schocken_rpc_pb2.PlayerList.state.STARTING
         else:
             player_list.status = schocken_rpc_pb2.PlayerList.state.ERROR
-            logger.log("ERROR: GameData.message: " + GameData.message)
         for player in GameData.players:
             player_list.player_names.append(player.player_name)
             
@@ -79,21 +78,21 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         return start_game_resp
 
     def touchDice(self, request, context):
-        logger.log("touchDice request. dice_id: " +
-              str(request.dice_id) + " player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
+        # logger.log("touchDice request. dice_id: " +
+        #       str(request.dice_id) + " player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
         GameData = self.GM.touch_dice(request.game_name.upper(), request.player_name, request.dice_id)
 
         return self.convertGamedata(GameData)
 
     def touchCup(self, request, context):
-        logger.log("touchCup player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
-              "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
+        # logger.log("touchCup player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
+        #       "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
         GameData = self.GM.touch_cup(request.game_name.upper(), request.player_name)
         return self.convertGamedata(GameData)
 
     def endTurn(self, request, context):
-        logger.log("endTurn player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
-              "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
+        # logger.log("endTurn player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
+        #       "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
         GameData = self.GM.end_turn(request.game_name.upper(), request.player_name)
         return self.convertGamedata(GameData)
 
@@ -104,8 +103,8 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         return self.convertGamedata(GameData)
 
     def turnSix(self, request, context):
-        logger.log("turnSix player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
-              "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
+        # logger.log("turnSix player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
+        #       "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
         GameData = self.GM.turn_six(request.game_name.upper(), request.player_name)
         return self.convertGamedata(GameData)
 
