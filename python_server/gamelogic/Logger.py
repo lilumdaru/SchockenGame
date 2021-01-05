@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Logger:
     PRINT_ON = True
-    PRINT_IN_FILE = False
+    PRINT_IN_FILE = True
     ADD_TIME = True
     file_string = ""
     FILE_NAME = "log.txt"
@@ -26,8 +26,5 @@ class Logger:
 
         # if put in destructor method, open function isn't available anymore
         if(self.PRINT_IN_FILE):
-            with open(self.FILE_NAME, "w") as text_file:
-                text_file.write(time_str + text)
-
-
-        
+            with open(self.FILE_NAME, "a") as text_file:
+                text_file.write(time_str + text + "\n")        
