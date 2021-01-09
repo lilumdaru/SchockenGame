@@ -9,7 +9,7 @@ class GameData {
   int activeRoll;
   int maxRolls;
   bool activeCupUp;
-  String gameEndMessage;
+  List<String> messages = [];
   bool turnSixButton = false;
   bool sendReport = false;
   int discsOnStack = 0;

@@ -192,7 +192,7 @@ class GameManager:
     def return_error(self, error_msg):
         # Build a GameObject with Error
         error_game = Game()
-        error_game.message = error_msg
+        error_game.error_msg = error_msg
         error_game.game_status = GameState.ERROR
         return error_game
 
@@ -205,24 +205,3 @@ class GameManager:
             game_name = ''.join(random.choice(letters) for i in range(self.GAME_NAME_LENGTH))
             search_name = self.game_name_exist(game_name)
         return game_name
-
-
-
-if (__name__ == '__main__'):
-    my_game_manager = GameManager()
-
-    game = my_game_manager.register_game()
-    reg_res1 = my_game_manager.register_player(game.game_name, "player1")
-    reg_res2 = my_game_manager.register_player(game.game_name, "player2")
-    reg_res3 = my_game_manager.register_player(game.game_name, "player3")
-    reg_res4 = my_game_manager.register_player(game.game_name, "player4")
-    reg_res5 = my_game_manager.register_player(game.game_name, "player5")
-
-    logger.log(reg_res1.message)
-    logger.log(reg_res2.message)
-    logger.log(reg_res3.message)
-    logger.log(reg_res4.message)
-    logger.log(reg_res5.message)
-
-    for i in range(len(reg_res1.players)):
-        logger.log(reg_res1.players[i].player_name)

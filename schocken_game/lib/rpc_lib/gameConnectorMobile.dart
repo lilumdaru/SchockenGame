@@ -140,7 +140,7 @@ class GameConnectorMobile extends GameConnector {
     gameData.activeRoll = rpcData.activeRoll;
     gameData.maxRolls = rpcData.maxRolls;
     gameData.activeCupUp = rpcData.activeCupUp;
-    gameData.gameEndMessage = rpcData.message;
+    gameData.messages = rpcData.messages;
     gameData.turnSixButton = rpcData.buttonTurn6;
     gameData.sendReport = rpcData.generateReport;
     gameData.discsOnStack = rpcData.discsOnStack;

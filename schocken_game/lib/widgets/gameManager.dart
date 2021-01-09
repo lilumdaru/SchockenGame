@@ -144,9 +144,20 @@ class GameManagerState extends State<GameManager> {
   }
 
   void showReport(GameData newData) {
-    Widget contentData = SingleChildScrollView(
-        child: Column(children: <Widget>[
-      Text(newData.gameEndMessage),
+    Widget contentData = Scrollbar(
+        child: SingleChildScrollView(
+            child: Column(children: <Widget>[
+      ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: newData.messages.length,
+          itemBuilder: (context, index2) {
+            return Card(
+              child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(child: Text(newData.messages[index2]))),
+            );
+          }),
       ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -154,7 +165,7 @@ class GameManagerState extends State<GameManager> {
           itemBuilder: (context, index) {
             return PlayerCard(index: index, myGameData: newData);
           })
-    ]));
+    ])));
 
     // flutter defined function
     showDialog(

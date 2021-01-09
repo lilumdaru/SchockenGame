@@ -363,10 +363,11 @@ class RpcGameData extends $pb.GeneratedMessage {
     ..a<$core.int>(5, 'activeRoll', $pb.PbFieldType.O3)
     ..a<$core.int>(6, 'maxRolls', $pb.PbFieldType.O3)
     ..aOB(7, 'activeCupUp')
-    ..aOS(8, 'message')
+    ..pPS(8, 'messages')
     ..aOB(9, 'buttonTurn6', protoName: 'button_turn_6')
     ..aOB(10, 'generateReport')
     ..a<$core.int>(11, 'discsOnStack', $pb.PbFieldType.O3)
+    ..aOS(12, 'errorMsg')
     ..hasRequiredFields = false
   ;
 
@@ -445,13 +446,7 @@ class RpcGameData extends $pb.GeneratedMessage {
   void clearActiveCupUp() => clearField(7);
 
   @$pb.TagNumber(8)
-  $core.String get message => $_getSZ(7);
-  @$pb.TagNumber(8)
-  set message($core.String v) { $_setString(7, v); }
-  @$pb.TagNumber(8)
-  $core.bool hasMessage() => $_has(7);
-  @$pb.TagNumber(8)
-  void clearMessage() => clearField(8);
+  $core.List<$core.String> get messages => $_getList(7);
 
   @$pb.TagNumber(9)
   $core.bool get buttonTurn6 => $_getBF(8);
@@ -479,6 +474,15 @@ class RpcGameData extends $pb.GeneratedMessage {
   $core.bool hasDiscsOnStack() => $_has(10);
   @$pb.TagNumber(11)
   void clearDiscsOnStack() => clearField(11);
+
+  @$pb.TagNumber(12)
+  $core.String get errorMsg => $_getSZ(11);
+  @$pb.TagNumber(12)
+  set errorMsg($core.String v) { $_setString(11, v); }
+  @$pb.TagNumber(12)
+  $core.bool hasErrorMsg() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearErrorMsg() => clearField(12);
 }
 
 class RpcPlayer extends $pb.GeneratedMessage {

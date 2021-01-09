@@ -88,10 +88,11 @@ const RpcGameData$json = const {
     const {'1': 'active_roll', '3': 5, '4': 1, '5': 5, '10': 'activeRoll'},
     const {'1': 'max_rolls', '3': 6, '4': 1, '5': 5, '10': 'maxRolls'},
     const {'1': 'active_cup_up', '3': 7, '4': 1, '5': 8, '10': 'activeCupUp'},
-    const {'1': 'message', '3': 8, '4': 1, '5': 9, '10': 'message'},
+    const {'1': 'messages', '3': 8, '4': 3, '5': 9, '10': 'messages'},
     const {'1': 'button_turn_6', '3': 9, '4': 1, '5': 8, '10': 'buttonTurn6'},
     const {'1': 'generate_report', '3': 10, '4': 1, '5': 8, '10': 'generateReport'},
     const {'1': 'discs_on_stack', '3': 11, '4': 1, '5': 5, '10': 'discsOnStack'},
+    const {'1': 'error_msg', '3': 12, '4': 1, '5': 9, '10': 'errorMsg'},
   ],
   '4': const [RpcGameData_game_state$json],
 };

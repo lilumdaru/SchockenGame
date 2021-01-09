@@ -87,10 +87,11 @@ message RpcGameData {
   int32 active_roll = 5;
   int32 max_rolls = 6;
   bool active_cup_up = 7;  // todo: deprecated. delete!
-  string message = 8;
+  repeated string messages = 8;
   bool button_turn_6 = 9;
   bool generate_report = 10;
   int32 discs_on_stack = 11;
+  string error_msg = 12;
 
   enum game_state {
     LOBBY = 0;

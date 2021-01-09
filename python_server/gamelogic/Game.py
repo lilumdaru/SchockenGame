@@ -14,7 +14,8 @@ class Game:
         # active_player = Player()
         self.active_roll = 0
         self.max_rolls = 3
-        self.message = ""
+        self.messages = []
+        self.error_msg = ""
         self.last_action = 0 # or use timestamp compatible datatyp
         self.player_counter = 0
         self.turn_six_button = False
@@ -199,7 +200,8 @@ class Game:
             temp_harte = self.harte_stack
         self.harte_stack = self.harte_stack - temp_harte
         self.players[index_looser].harte = self.players[index_looser].harte + temp_harte
-        self.message = player_giving + " verteilt " + str(temp_harte) + " Harte an " + player_taking + ". " + str(self.harte_stack ) + " Harte liegen auf dem Stapel."
+        self.messages.append(player_giving + " verteilt " + str(temp_harte) + " Harte an " + player_taking + ".")
+        self.messages.append(str(self.harte_stack ) + " Harte liegen auf dem Stapel.")
 
         # change order of List, losser is first now!
         self.players = self.players[index_looser:] + self.players[:index_looser]
@@ -213,6 +215,7 @@ class Game:
         self.active_roll = 0
         self.max_rolls = 3
         self.id_player_active = 0
+        self.messages.clear()
         for player in self.players:
             player.dices.clear()
             player.player_status = PlayerState.PASSIVE

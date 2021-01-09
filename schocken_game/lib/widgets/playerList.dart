@@ -40,8 +40,9 @@ class _PlayerListState extends State<PlayerList> {
       init = false;
     }
 
-    return SingleChildScrollView(
-        child: Column(children: <Widget>[
+    return Scrollbar(
+        child: SingleChildScrollView(
+            child: Column(children: <Widget>[
       ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -50,6 +51,6 @@ class _PlayerListState extends State<PlayerList> {
             return PlayerCard(
                 index: index, myGameData: myInheritedWidget.myGameData);
           })
-    ]));
+    ])));
   }
 }

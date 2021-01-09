@@ -28,7 +28,7 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         newGame.game_nr = GameData.game_id
         if(GameData.game_status == GameState.ERROR):
             newGame.game_nr = -1
-            newGame.error_msg = GameData.message
+            newGame.error_msg = GameData.error_msg
         logger.log("GameData.game_name: " + GameData.game_name)
         return newGame
 
@@ -40,13 +40,13 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         reg_res.return_value = 0
         reg_res.player_nr = 2
         reg_res.game_nr = GameData.game_id
-        reg_res.error_msg = GameData.message
-        if ( (GameData.game_status == GameState.ERROR ) ):
+        reg_res.error_msg = GameData.error_msg
+        if( (GameData.game_status == GameState.ERROR ) ):
             reg_res.return_value = -1
         return reg_res
 
     def getPlayerList(self, request, context):
-        # logger.log("getPlayerList request. GameNr: " +
+        # logger.log("getPlayerList request. GameNr: " + 
         #       str(request.game_nr) + " GameName: " + request.game_name)
         GameData = self.GM.get_player_list(request.game_name.upper(), request.player_name)
         
@@ -157,10 +157,11 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
 
         rpc_game_data.active_roll = gameData.active_roll
         rpc_game_data.max_rolls = gameData.max_rolls
-        rpc_game_data.message = gameData.message
+        rpc_game_data.messages.extend(gameData.messages)
         rpc_game_data.button_turn_6 = gameData.turn_six_button
         rpc_game_data.generate_report = gameData.send_report
         rpc_game_data.discs_on_stack = gameData.harte_stack
+        rpc_game_data.error_msg = gameData.error_msg
 
         return rpc_game_data
 
