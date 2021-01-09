@@ -62,7 +62,7 @@ class Game:
         if(self.max_rolls - self.active_roll <= 0):
             return
         # remove dice with dice_id from dice list
-        del player.dices[dice_id]
+        player.dices[dice_id] = 0
 
 
     def touch_cup(self, player_name):
@@ -73,6 +73,8 @@ class Game:
         # check if active_roll < max_rolls
         if(self.active_roll >= self.max_rolls ):
             return
+        while(player.dices.count(0) > 0): # 0 is a place holder for a touched dice
+            player.dices.remove(0)
         if(len(player.dices) == 3):
             return
         if(self.max_rolls - self.active_roll == 1):

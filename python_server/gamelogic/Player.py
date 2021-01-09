@@ -16,6 +16,8 @@ class Player:
 
     # see docu in excel file
     def calc_harte_points(self):
+        while(self.dices.count(0) > 0): # 0 is a place holder for a touched dice
+            self.dices.remove(0)
         while(len(self.dices) < 3):
             new_dice = random.randint(1, 6)
             self.dices.append(new_dice)

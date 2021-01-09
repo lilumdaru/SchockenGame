@@ -24,6 +24,11 @@ class _Dice extends State<Dice> {
     int diceValue =
         myInheritedWidget.myGameData.activePlayer.dice[widget.index - 1];
 
+    if (diceValue == 0) {
+      //  0 is a place holder for a touched dice
+      return Container();
+    }
+
     return Container(
       color: Colors.white,
       child: GestureDetector(
