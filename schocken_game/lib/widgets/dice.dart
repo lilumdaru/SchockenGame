@@ -30,10 +30,8 @@ class _Dice extends State<Dice> {
     }
 
     return Container(
-      color: Colors.white,
       child: GestureDetector(
         onTap: () => myInheritedWidget.diceTouched(widget.index - 1),
-        // print("dice with " + widget.number.toString() + " touched!"),
         child: Image.asset('assets/' + diceValue.toString() + '.png'),
       ),
       width: widget.width,

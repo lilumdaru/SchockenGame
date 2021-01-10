@@ -39,7 +39,6 @@ class _RoundCounter extends State<RoundCounter> {
       ),
       width: widget.width,
       height: widget.height,
-      color: Colors.amber[200],
     );
   }
 }

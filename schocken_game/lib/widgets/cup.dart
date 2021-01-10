@@ -36,7 +36,6 @@ class _Cup extends State<Cup> {
       ),
       width: widget.width,
       height: widget.height,
-      color: Colors.amber[200],
     );
   }
 }

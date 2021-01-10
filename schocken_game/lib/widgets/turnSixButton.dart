@@ -28,7 +28,6 @@ class _TurnSixButton extends State<TurnSixButton> {
       ),
       width: widget.width,
       height: widget.height,
-      // color: Colors.amber[200],
     );
   }
 }
