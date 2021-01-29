@@ -84,12 +84,12 @@ class GameConnectorMobile extends GameConnector {
     switch (rpcData.gameStatus) {
       case RpcGameData_game_state.ENDED:
         {
-          gameData.state = gameStatus.ENDED;
+          gameData.state = GameStatus.ENDED;
         }
         break;
       case RpcGameData_game_state.ERROR:
         {
-          gameData.state = gameStatus.ERROR;
+          gameData.state = GameStatus.ERROR;
           String title = "Fehler";
           String text = "Server Error.";
           String btnText = "OK";
@@ -98,25 +98,25 @@ class GameConnectorMobile extends GameConnector {
         break;
       case RpcGameData_game_state.LOBBY:
         {
-          gameData.state = gameStatus.LOBBY;
+          gameData.state = GameStatus.LOBBY;
           timeout = 0;
         }
         break;
       case RpcGameData_game_state.RUNNING:
         {
-          gameData.state = gameStatus.RUNNING;
+          gameData.state = GameStatus.RUNNING;
           timeout = 0;
         }
         break;
       case RpcGameData_game_state.STARTING:
         {
-          gameData.state = gameStatus.STARTING;
+          gameData.state = GameStatus.STARTING;
           timeout = 0;
         }
         break;
       case RpcGameData_game_state.TIMEOUT:
         {
-          gameData.state = gameStatus.TIMEOUT;
+          gameData.state = GameStatus.TIMEOUT;
           if (timeout > 5) {
             String title = "Fehler";
             String text = "Server Timeout.";
@@ -130,9 +130,47 @@ class GameConnectorMobile extends GameConnector {
         break;
       default:
         {
-          gameData.state = gameStatus.ERROR;
+          gameData.state = GameStatus.ERROR;
         }
     } // end switch
+
+    // GameRound
+    switch (rpcData.round) {
+      case RpcGameData_game_round.ROUND1_FH:
+        {
+          gameData.gameRound = GameRound.ROUND1_FH;
+        }
+        break;
+      case RpcGameData_game_round.ROUND1_BACK:
+        {
+          gameData.gameRound = GameRound.ROUND1_BACK;
+        }
+        break;
+      case RpcGameData_game_round.ROUND2_FH:
+        {
+          gameData.gameRound = GameRound.ROUND2_FH;
+        }
+        break;
+      case RpcGameData_game_round.ROUND2_BACK:
+        {
+          gameData.gameRound = GameRound.ROUND2_BACK;
+        }
+        break;
+      case RpcGameData_game_round.FINALE_FH:
+        {
+          gameData.gameRound = GameRound.FINALE_FH;
+        }
+        break;
+      case RpcGameData_game_round.FINALE_BACK:
+        {
+          gameData.gameRound = GameRound.FINALE_BACK;
+        }
+        break;
+      default:
+        {
+          gameData.gameRound = GameRound.ROUND1_FH;
+        }
+    }
 
     gameData.activePlayer = convertPlayerData(rpcData.activePlayer);
     print(
@@ -169,7 +207,10 @@ class GameConnectorMobile extends GameConnector {
       dices.add(rpcPlayer.dice[j]);
     }
 
-    return new Player(name, plStatus, harte, dices);
+    Player tempPlayer = Player(name, plStatus, harte, dices);
+    tempPlayer.lostHalf = rpcPlayer.lostHalf;
+
+    return tempPlayer;
   }
 
   Future<void> getPlayerList(Function updateLobby) async {

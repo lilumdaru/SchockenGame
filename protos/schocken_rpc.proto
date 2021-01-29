@@ -92,6 +92,7 @@ message RpcGameData {
   bool generate_report = 10;
   int32 discs_on_stack = 11;
   string error_msg = 12;
+  game_round round = 13;
 
   enum game_state {
     LOBBY = 0;
@@ -101,6 +102,15 @@ message RpcGameData {
     TIMEOUT = 4;
     ERROR = 5;
   }
+
+  enum game_round {
+    ROUND1_FH = 0; //  FH = First Half
+    ROUND1_BACK = 1;
+    ROUND2_FH = 2;
+    ROUND2_BACK = 3;
+    FINALE_FH = 4;
+    FINALE_BACK = 5;
+  }
 }
 
 message RpcPlayer {
@@ -108,6 +118,7 @@ message RpcPlayer {
   player_state player_status = 2;
   int32 harte = 3;
   repeated int32 dice = 4;
+  bool lost_half = 5;
   
   enum player_state {
     ACTIVE = 0;

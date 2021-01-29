@@ -1,4 +1,4 @@
-from MyEnums import GameState, PlayerState
+from MyEnums import GameState, PlayerState, Round
 from Player import Player
 import random
 import time
@@ -24,6 +24,7 @@ class Game:
         self.harte_stack = 13
         self.MAX_PLAYERS = 4
         self.send_report = False
+        self.round = Round.ROUND1_FH
 
 
     def player_name_exists(self, player_name):
@@ -120,7 +121,7 @@ class Game:
         self.turn_six_button = False
         # first players sets max number of rolls for round
         if(self.id_player_active == 0):
-            if(len(self.players[self.id_player_active].dices) != 3):
+            if(len(self.players[self.id_player_active].dices) - self.players[self.id_player_active].dices.count(0) != 3):
                 self.active_roll = self.active_roll +1
                 if(self.active_roll > 3):
                     self.active_roll = 3
@@ -174,41 +175,192 @@ class Game:
         # find harte
         # find loser
         index_looser = 0
+        index_winner = 0
         i=0
         temp_harte = 0
         temp_points_low = 10000
         temp_points_high = 0
-        player_giving = ""
-        player_taking = ""
         for player in self.players:
             [harte, points] = player.calc_harte_points()
             # find harte
             if(harte > temp_harte):
                 temp_harte = harte
-            # find winner
-            if(points > temp_points_high):
-                player_giving = player.player_name
-                temp_points_high = points
-            # find looser
-            if(points <= temp_points_low):
-                index_looser = i
-                temp_points_low = points
-                player_taking = player.player_name
+            # first half:
+            if(not self.isBackround()):
+                # find winner
+                if(points > temp_points_high):
+                    player_winning = player
+                    temp_points_high = points
+                    index_winner = i
+                # find looser
+                if(points <= temp_points_low):
+                    index_looser = i
+                    temp_points_low = points
+                    player_loosing = player
+            else: # second half / back round:
+                # find winner
+                if(points >= temp_points_high):
+                    player_winning = player
+                    temp_points_high = points
+                # find looser
+                if(points < temp_points_low):
+                    index_looser = i
+                    temp_points_low = points
+                    player_loosing = player
             i = i+1
-        # distribute harte
-        if(temp_harte > self.harte_stack):
-            temp_harte = self.harte_stack
-        self.harte_stack = self.harte_stack - temp_harte
-        self.players[index_looser].harte = self.players[index_looser].harte + temp_harte
-        self.messages.append(player_giving + " verteilt " + str(temp_harte) + " Harte an " + player_taking + ".")
-        self.messages.append(str(self.harte_stack ) + " Harte liegen auf dem Stapel.")
+        
+        if(temp_points_high == 999):
+            self.messages.append(player_winning.player_name + " hat ausgeschockt!")
+            self.messages.append(player_loosing.player_name + " verliert diese Halbzeit!")
+            player_loosing.lost_half = player_loosing.lost_half +1
+            self.nextFullRound(self.players[index_looser])
+        elif(temp_points_low == 1):
+            self.messages.append(player_loosing.player_name + " hat Dibborsch!")
+            player_loosing.lost_half = player_loosing.lost_half +1
+            self.nextFullRound(self.players[index_looser])
+        else:
+            # normal end of round:
+            # distribute harte
+            # first half
+            if(not self.isBackround()):
+                if(temp_harte > self.harte_stack):
+                    temp_harte = self.harte_stack
+                self.harte_stack = self.harte_stack - temp_harte
+                self.players[index_looser].harte = self.players[index_looser].harte + temp_harte
+                self.messages.append(player_winning.player_name + " verteilt " + str(temp_harte) + " Harte an " + player_loosing.player_name + ".")
+            else:
+                # second half / Back round
+                if(temp_harte > self.players[index_winner].harte):
+                    temp_harte = self.players[index_winner].harte
+                self.harte_stack = self.harte_stack + temp_harte
+                self.players[index_winner].harte = self.players[index_winner].harte - temp_harte
+                self.messages.append(player_winning.player_name + " legt " + str(temp_harte) + " Harte zurück auf den Stapel.")
+        
+            self.messages.append(str(self.harte_stack ) + " Harte liegen auf dem Stapel.")
+            
+            self.changeRound(self.players[index_looser])
 
-        # change order of List, losser is first now!
-        self.players = self.players[index_looser:] + self.players[:index_looser]
+        print("current round: " + str(self.round))
+        for player in self.players:
+            print(player.player_name + " lost_half: "+ str(player.lost_half))
+            print(player.player_name + " harte: "+ str(player.harte))
+
+        # change order if List
+        if(not self.isBackround()):
+        # change order of List, looser is first now!
+            self.players = self.players[index_looser:] + self.players[:index_looser]
+        else:
+            # Back round: Player with most discs is first now!
+            high_discs = 0
+            i=0
+            index_start = 0
+            for player in self.players:
+                if (player.harte > high_discs):
+                    high_discs = player.harte
+                    index_start = i
+                i = i +1
+            self.players = self.players[index_start:] + self.players[:index_start]
 
         for player in self.players:
             player.player_status = PlayerState.SEND_REPORT
         self.game_status = GameState.SEND_REPORT
+
+
+    def nextFullRound(self, looser):
+        for player in self.players:
+            player.harte = 0
+        self.harte_stack = 13
+
+        if(self.round == Round.ROUND1_FH or self.round == Round.ROUND1_BACK):
+            self.round = Round.ROUND2_FH
+        
+        elif(self.round == Round.ROUND2_FH or self.round == Round.ROUND2_BACK):
+            self.round = Round.FINALE_FH
+            # check if looser already has lost 1 half, if yes, skipp Finale
+            if(looser.lost_half == 2):
+                self.messages.append(looser.player_name + " hat beide Hälften verloren, " + looser.player_name + " muss ne Runde geben.")
+                self.round = Round.ROUND1_FH
+                self.resetGame()
+            else:
+                self.messages.append("Die Final Runde beginnt.")
+        
+        elif(self.round == Round.FINALE_FH or self.round == Round.FINALE_BACK):
+            self.messages.append(looser.player_name + " hat das Finale verloren, " + looser.player_name + " muss ne Runde geben.")
+            self.round = Round.ROUND1_FH
+            self.resetGame()
+
+
+    def changeRound(self, looser):
+        if(self.round == Round.ROUND1_FH and self.harte_stack == 0):
+            self.round = Round.ROUND1_BACK
+
+        # get number of players with harte:
+        nr = 0
+        one_player = False
+        for player in self.players:
+            if( player.harte != 0):
+                nr = nr + 1
+        if(nr == 1):
+            one_player = True
+
+        if(self.round == Round.ROUND1_BACK and one_player ):
+            looser.lost_half = 1
+            self.messages.append(looser.player_name + " hat die erste Hälfte verloren.")
+            for player in self.players:
+                player.harte = 0
+            self.harte_stack = 13
+            self.round = Round.ROUND2_FH
+        
+        elif(self.round == Round.ROUND2_FH and self.harte_stack == 0):
+            self.round = Round.ROUND2_BACK
+
+        elif(self.round == Round.ROUND2_BACK and one_player):
+            if(looser.lost_half == 2):
+                self.messages.append(looser.player_name + " hat beide Hälften verloren, " + looser.player_name + " muss ne Runde geben.")
+                self.round = Round.ROUND1_FH
+                self.resetGame()
+            else:
+                looser.lost_half = looser.lost_half +1
+                for player in self.players:
+                    player.harte = 0
+                self.harte_stack = 13
+                self.round = Round.FINALE_FH
+        
+        elif(self.round == Round.FINALE_FH and self.harte_stack == 0):
+            self.round = Round.FINALE_BACK
+        
+        elif(self.round == Round.FINALE_BACK and one_player):
+            self.messages.append(looser.player_name + " hat das Finale verloren, " + looser.player_name + " muss ne Runde geben.")
+            self.round = Round.ROUND1_FH
+            self.resetGame()
+
+
+    def resetGame(self):
+        for player in self.players:
+            player.harte = 0
+            player.lost_half = 0
+        self.harte_stack = 13
+        self.messages.append("Ein neues Spiel startet.")
+        # include new joined players here
+
+
+    def setPlayersSpec(self):
+        if(self.isBackround()):
+            for player in self.players:
+                if(player.harte == 0):
+                    player.player_status = PlayerState.SPEC
+
+        if(self.round == Round.FINALE_FH or self.round == Round.FINALE_BACK):
+            for player in self.players:
+                if(player.lost_half == 0):
+                    player.player_status = PlayerState.SPEC
+
+
+    def isBackround(self):
+        if(self.round == Round.ROUND1_BACK or self.round == Round.ROUND2_BACK or self.round == Round.FINALE_BACK):
+            return True
+        else:
+            return False
 
 
     def start_round(self):
@@ -219,12 +371,14 @@ class Game:
         for player in self.players:
             player.dices.clear()
             player.player_status = PlayerState.PASSIVE
-        self.players[0].player_status = PlayerState.ACTIVE
-        self.touch_cup(self.players[0].player_name)
         
-        # reset stack
-        if(self.harte_stack == 0):
-            self.harte_stack = 13
+        self.setPlayersSpec()
+        # find first PASSIVE player starts the game:
+        for player in self.players:
+            if(player.player_status == PlayerState.PASSIVE):
+                player.player_status = PlayerState.ACTIVE
+                self.touch_cup(player.player_name)
+                break
 
 
     def max_players_reached(self):

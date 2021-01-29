@@ -92,8 +92,8 @@ class GameManagerState extends State<GameManager> {
     }
     newData.activeCupUp = cupUp;
 
-    if (newData.state == gameStatus.LOBBY ||
-        newData.state == gameStatus.RUNNING) {
+    if (newData.state == GameStatus.LOBBY ||
+        newData.state == GameStatus.RUNNING) {
       setState(() {
         myGameData = newData;
       });

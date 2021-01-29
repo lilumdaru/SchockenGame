@@ -368,6 +368,7 @@ class RpcGameData extends $pb.GeneratedMessage {
     ..aOB(10, 'generateReport')
     ..a<$core.int>(11, 'discsOnStack', $pb.PbFieldType.O3)
     ..aOS(12, 'errorMsg')
+    ..e<RpcGameData_game_round>(13, 'round', $pb.PbFieldType.OE, defaultOrMaker: RpcGameData_game_round.ROUND1_FH, valueOf: RpcGameData_game_round.valueOf, enumValues: RpcGameData_game_round.values)
     ..hasRequiredFields = false
   ;
 
@@ -483,6 +484,15 @@ class RpcGameData extends $pb.GeneratedMessage {
   $core.bool hasErrorMsg() => $_has(11);
   @$pb.TagNumber(12)
   void clearErrorMsg() => clearField(12);
+
+  @$pb.TagNumber(13)
+  RpcGameData_game_round get round => $_getN(12);
+  @$pb.TagNumber(13)
+  set round(RpcGameData_game_round v) { setField(13, v); }
+  @$pb.TagNumber(13)
+  $core.bool hasRound() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearRound() => clearField(13);
 }
 
 class RpcPlayer extends $pb.GeneratedMessage {
@@ -491,6 +501,7 @@ class RpcPlayer extends $pb.GeneratedMessage {
     ..e<RpcPlayer_player_state>(2, 'playerStatus', $pb.PbFieldType.OE, defaultOrMaker: RpcPlayer_player_state.ACTIVE, valueOf: RpcPlayer_player_state.valueOf, enumValues: RpcPlayer_player_state.values)
     ..a<$core.int>(3, 'harte', $pb.PbFieldType.O3)
     ..p<$core.int>(4, 'dice', $pb.PbFieldType.P3)
+    ..aOB(5, 'lostHalf')
     ..hasRequiredFields = false
   ;
 
@@ -538,5 +549,14 @@ class RpcPlayer extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(4)
   $core.List<$core.int> get dice => $_getList(3);
+
+  @$pb.TagNumber(5)
+  $core.bool get lostHalf => $_getBF(4);
+  @$pb.TagNumber(5)
+  set lostHalf($core.bool v) { $_setBool(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasLostHalf() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearLostHalf() => clearField(5);
 }
 

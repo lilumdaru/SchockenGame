@@ -93,8 +93,9 @@ const RpcGameData$json = const {
     const {'1': 'generate_report', '3': 10, '4': 1, '5': 8, '10': 'generateReport'},
     const {'1': 'discs_on_stack', '3': 11, '4': 1, '5': 5, '10': 'discsOnStack'},
     const {'1': 'error_msg', '3': 12, '4': 1, '5': 9, '10': 'errorMsg'},
+    const {'1': 'round', '3': 13, '4': 1, '5': 14, '6': '.RpcGameData.game_round', '10': 'round'},
   ],
-  '4': const [RpcGameData_game_state$json],
+  '4': const [RpcGameData_game_state$json, RpcGameData_game_round$json],
 };
 
 const RpcGameData_game_state$json = const {
@@ -109,6 +110,18 @@ const RpcGameData_game_state$json = const {
   ],
 };
 
+const RpcGameData_game_round$json = const {
+  '1': 'game_round',
+  '2': const [
+    const {'1': 'ROUND1_FH', '2': 0},
+    const {'1': 'ROUND1_BACK', '2': 1},
+    const {'1': 'ROUND2_FH', '2': 2},
+    const {'1': 'ROUND2_BACK', '2': 3},
+    const {'1': 'FINALE_FH', '2': 4},
+    const {'1': 'FINALE_BACK', '2': 5},
+  ],
+};
+
 const RpcPlayer$json = const {
   '1': 'RpcPlayer',
   '2': const [
@@ -116,6 +129,7 @@ const RpcPlayer$json = const {
     const {'1': 'player_status', '3': 2, '4': 1, '5': 14, '6': '.RpcPlayer.player_state', '10': 'playerStatus'},
     const {'1': 'harte', '3': 3, '4': 1, '5': 5, '10': 'harte'},
     const {'1': 'dice', '3': 4, '4': 3, '5': 5, '10': 'dice'},
+    const {'1': 'lost_half', '3': 5, '4': 1, '5': 8, '10': 'lostHalf'},
   ],
   '4': const [RpcPlayer_player_state$json],
 };

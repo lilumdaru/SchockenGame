@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:schocken_game/shared/gameData.dart';
 import 'package:schocken_game/widgets/turnSixButton.dart';
 import '../widgets/dice.dart';
 import '../widgets/cup.dart';
@@ -24,6 +25,42 @@ class GameZone extends StatefulWidget {
 class _GameZoneState extends State<GameZone> {
   @override
   Widget build(BuildContext context) {
+    final myInheritedWidget = GameManager.of(context);
+    Widget gameRound = Container();
+
+    switch (myInheritedWidget.myGameData.gameRound) {
+      case GameRound.ROUND1_FH:
+        {
+          gameRound = Text("R1: H");
+        }
+        break;
+      case GameRound.ROUND1_BACK:
+        {
+          gameRound = Text("R1: B");
+        }
+        break;
+      case GameRound.ROUND2_FH:
+        {
+          gameRound = Text("R2: H");
+        }
+        break;
+      case GameRound.ROUND2_BACK:
+        {
+          gameRound = Text("R2: B");
+        }
+        break;
+      case GameRound.FINALE_FH:
+        {
+          gameRound = Text("F: H");
+        }
+        break;
+      case GameRound.FINALE_BACK:
+        {
+          gameRound = Text("F: B");
+        }
+        break;
+    }
+
     return Container(
         width: widget.gfWidth,
         height: widget.gfHeight,
@@ -87,6 +124,11 @@ class _GameZoneState extends State<GameZone> {
               height: 0.2 * widget.gfHeight,
               width: 0.6 * widget.gfWidth * 0.618,
             ),
+          ),
+          Positioned(
+            bottom: 0 * widget.gfHeight,
+            right: 0.5 * widget.gfWidth * 0.618,
+            child: gameRound,
           ),
           // Positioned(
           //   bottom: 0.05 * gfHeight,

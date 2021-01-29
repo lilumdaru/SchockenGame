@@ -13,7 +13,7 @@ from rpc_lib import schocken_rpc_pb2
 from rpc_lib import schocken_rpc_pb2_grpc
 
 from gamelogic.GameManager import GameManager
-from gamelogic.MyEnums import GameState, PlayerState
+from gamelogic.MyEnums import GameState, PlayerState, Round
 
 logger = Logger()
 
@@ -134,6 +134,7 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
                 temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.ERROR
             
             temp_player.harte = player.harte
+            temp_player.lost_half = player.lost_half
             del temp_player.dice[:]
             temp_player.dice.extend(player.dices)
             rpc_game_data.players.append(temp_player)
@@ -154,6 +155,19 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ERROR
         else:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ERROR
+
+        if(gameData.round == Round.ROUND1_FH):
+            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND1_FH
+        elif(gameData.round == Round.ROUND1_BACK):
+            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND1_BACK
+        elif(gameData.round == Round.ROUND2_FH):
+            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND2_FH
+        elif(gameData.round == Round.ROUND2_BACK):
+            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND2_BACK
+        elif(gameData.round == Round.FINALE_FH):
+            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.FINALE_FH
+        elif(gameData.round == Round.FINALE_BACK):
+            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.FINALE_BACK
 
         rpc_game_data.active_roll = gameData.active_roll
         rpc_game_data.max_rolls = gameData.max_rolls

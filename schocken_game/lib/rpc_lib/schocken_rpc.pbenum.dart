@@ -55,6 +55,29 @@ class RpcGameData_game_state extends $pb.ProtobufEnum {
   const RpcGameData_game_state._($core.int v, $core.String n) : super(v, n);
 }
 
+class RpcGameData_game_round extends $pb.ProtobufEnum {
+  static const RpcGameData_game_round ROUND1_FH = RpcGameData_game_round._(0, 'ROUND1_FH');
+  static const RpcGameData_game_round ROUND1_BACK = RpcGameData_game_round._(1, 'ROUND1_BACK');
+  static const RpcGameData_game_round ROUND2_FH = RpcGameData_game_round._(2, 'ROUND2_FH');
+  static const RpcGameData_game_round ROUND2_BACK = RpcGameData_game_round._(3, 'ROUND2_BACK');
+  static const RpcGameData_game_round FINALE_FH = RpcGameData_game_round._(4, 'FINALE_FH');
+  static const RpcGameData_game_round FINALE_BACK = RpcGameData_game_round._(5, 'FINALE_BACK');
+
+  static const $core.List<RpcGameData_game_round> values = <RpcGameData_game_round> [
+    ROUND1_FH,
+    ROUND1_BACK,
+    ROUND2_FH,
+    ROUND2_BACK,
+    FINALE_FH,
+    FINALE_BACK,
+  ];
+
+  static final $core.Map<$core.int, RpcGameData_game_round> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static RpcGameData_game_round valueOf($core.int value) => _byValue[value];
+
+  const RpcGameData_game_round._($core.int v, $core.String n) : super(v, n);
+}
+
 class RpcPlayer_player_state extends $pb.ProtobufEnum {
   static const RpcPlayer_player_state ACTIVE = RpcPlayer_player_state._(0, 'ACTIVE');
   static const RpcPlayer_player_state PASSIVE = RpcPlayer_player_state._(1, 'PASSIVE');

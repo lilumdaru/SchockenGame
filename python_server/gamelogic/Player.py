@@ -13,6 +13,7 @@ class Player:
         self.harte = 0
         self.dices = []
         self.last_action = time.time()  # or use timestamp compatible datatyp
+        self.lost_half = 0
 
     # see docu in excel file
     def calc_harte_points(self):

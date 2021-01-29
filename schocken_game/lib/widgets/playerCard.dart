@@ -76,6 +76,17 @@ class _PlayerCard extends State<PlayerCard> {
           }),
     );
 
+    Widget lostHalf;
+    if (myGameData.players[index].lostHalf) {
+      lostHalf = Image.asset(
+        'assets/losthalf.png',
+        width: 20,
+        height: 20,
+      );
+    } else {
+      lostHalf = new Container();
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
       child: Card(
@@ -91,10 +102,11 @@ class _PlayerCard extends State<PlayerCard> {
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  // SizedBox(width: 1.0),
+                  SizedBox(width: 1.0),
                   dicesElement,
+                  lostHalf,
                 ],
               ),
             ],

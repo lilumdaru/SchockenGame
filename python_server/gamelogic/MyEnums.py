@@ -32,3 +32,18 @@ class GameState(Enum):
 
     def __ne__(self, other):
         return self.value != other.value
+
+
+class Round(Enum):
+    ROUND1_FH = 0 # FH = First Half
+    ROUND1_BACK = 1
+    ROUND2_FH = 2
+    ROUND2_BACK = 3
+    FINALE_FH = 4
+    FINALE_BACK = 5
+
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def __ne__(self, other):
+        return self.value != other.value
