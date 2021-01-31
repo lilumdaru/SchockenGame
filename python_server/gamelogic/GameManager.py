@@ -6,7 +6,7 @@ from enum import Enum
 
 # sys.path.append(os.path.join(os.path.dirname(__file__), "..", "DataStructure"))
 from Player import Player
-from Game import Game
+from Game import Game # pylint: disable=import-error
 from MyEnums import GameState
 from Logger import Logger
 import random

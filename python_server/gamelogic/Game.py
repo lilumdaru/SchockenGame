@@ -1,9 +1,11 @@
-from MyEnums import GameState, PlayerState, Round
-from Player import Player
+from MyEnums import GameState, PlayerState, Round # pylint: disable=import-error
+from Player import Player # pylint: disable=import-error
 import random
 import time
+from Logger import Logger # pylint: disable=import-error
 
 random.seed()
+logger = Logger()
 
 class Game:
     def __init__(self):
@@ -130,14 +132,23 @@ class Game:
                 self.max_rolls = 1
         # change player_status active to passive and next player to active
         self.players[self.id_player_active].player_status = PlayerState.PASSIVE
-        if(len(self.players) > self.id_player_active + 1):
-            # next player
-            self.id_player_active = self.id_player_active + 1
-            self.active_roll = 0
-            self.players[self.id_player_active].player_status = PlayerState.ACTIVE
-            self.touch_cup(self.players[self.id_player_active].player_name)
-        else:
-            self.end_round()
+        
+        search_next_player = True
+        count = 1
+        while(search_next_player):
+            if(len(self.players) > self.id_player_active + count):
+                if(self.players[self.id_player_active + count].player_status == PlayerState.PASSIVE):
+                    # next player
+                    self.id_player_active = self.id_player_active + count
+                    self.active_roll = 0
+                    self.players[self.id_player_active].player_status = PlayerState.ACTIVE
+                    self.touch_cup(self.players[self.id_player_active].player_name)
+                    search_next_player = False
+                else:
+                    count = count +1
+            else:
+                search_next_player = False
+                self.end_round()
     
 
     def refresh_player(self, player_name):
@@ -181,6 +192,9 @@ class Game:
         temp_points_low = 10000
         temp_points_high = 0
         for player in self.players:
+            if(player.player_status == PlayerState.SPEC):
+                i = i+1
+                continue
             [harte, points] = player.calc_harte_points()
             # find harte
             if(harte > temp_harte):
@@ -202,6 +216,7 @@ class Game:
                 if(points >= temp_points_high):
                     player_winning = player
                     temp_points_high = points
+                    index_winner = i
                 # find looser
                 if(points < temp_points_low):
                     index_looser = i
@@ -210,13 +225,19 @@ class Game:
             i = i+1
         
         if(temp_points_high == 999):
+            # 1 1 1
             self.messages.append(player_winning.player_name + " hat ausgeschockt!")
-            self.messages.append(player_loosing.player_name + " verliert diese Halbzeit!")
-            player_loosing.lost_half = player_loosing.lost_half +1
+            if(self.round == Round.FINALE_FH or self.round == Round.FINALE_BACK):
+                self.messages.append(player_loosing.player_name + " verliert das Finale!")
+            else:
+                self.messages.append(player_loosing.player_name + " verliert diese Halbzeit!")
+
+            player_loosing.lost_half = player_loosing.lost_half + 1
             self.nextFullRound(self.players[index_looser])
         elif(temp_points_low == 1):
+            # 2 2 1
             self.messages.append(player_loosing.player_name + " hat Dibborsch!")
-            player_loosing.lost_half = player_loosing.lost_half +1
+            player_loosing.lost_half = player_loosing.lost_half + 1
             self.nextFullRound(self.players[index_looser])
         else:
             # normal end of round:
@@ -240,12 +261,12 @@ class Game:
             
             self.changeRound(self.players[index_looser])
 
-        print("current round: " + str(self.round))
+        logger.log("current round: " + str(self.round))
         for player in self.players:
-            print(player.player_name + " lost_half: "+ str(player.lost_half))
-            print(player.player_name + " harte: "+ str(player.harte))
+            logger.log(player.player_name + " lost_half: "+ str(player.lost_half))
+            logger.log(player.player_name + " harte: "+ str(player.harte))
 
-        # change order if List
+        # change order of List
         if(not self.isBackround()):
         # change order of List, looser is first now!
             self.players = self.players[index_looser:] + self.players[:index_looser]
@@ -302,6 +323,7 @@ class Game:
                 nr = nr + 1
         if(nr == 1):
             one_player = True
+        logger.log("player_name: " + looser.player_name + "nr: " + str(nr) + ", one_player: " + str(one_player))
 
         if(self.round == Round.ROUND1_BACK and one_player ):
             looser.lost_half = 1
@@ -315,7 +337,7 @@ class Game:
             self.round = Round.ROUND2_BACK
 
         elif(self.round == Round.ROUND2_BACK and one_player):
-            if(looser.lost_half == 2):
+            if(looser.lost_half == 1): # if looser lost first half, he already has 1 marker!
                 self.messages.append(looser.player_name + " hat beide Hälften verloren, " + looser.player_name + " muss ne Runde geben.")
                 self.round = Round.ROUND1_FH
                 self.resetGame()
@@ -324,6 +346,7 @@ class Game:
                 for player in self.players:
                     player.harte = 0
                 self.harte_stack = 13
+                self.messages.append(looser.player_name + " hat die zweite Hälften verloren. Das Finale beginnt.")
                 self.round = Round.FINALE_FH
         
         elif(self.round == Round.FINALE_FH and self.harte_stack == 0):
@@ -347,6 +370,7 @@ class Game:
     def setPlayersSpec(self):
         if(self.isBackround()):
             for player in self.players:
+                logger.log(player.player_name + " hat " + str(player.harte))
                 if(player.harte == 0):
                     player.player_status = PlayerState.SPEC
 
