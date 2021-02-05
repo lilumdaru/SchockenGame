@@ -24,7 +24,7 @@ class Game:
         self.count_sixer = 0
         self.id_player_active = 0
         self.harte_stack = 13
-        self.MAX_PLAYERS = 4
+        self.MAX_PLAYERS = 10
         self.send_report = False
         self.round = Round.ROUND1_FH
 
