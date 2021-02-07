@@ -1,0 +1,23 @@
+BUGs:
+- Finale wird aktuell von dem looser der 2. Halbzeit gestartet. Soll Looser der 1. Halbzeit.
+- server timeout - game wird beended? wenn jemand bei gestartetem Spiel versucht dem spiel beizutreten.
+- nur ein spiel zu einer Zeit möglich??
+- spiel starten nur aus app, aber nicht von WebApp möglich!!
+- Wenn man bei der hin Runde alle 13 harten bekommt spielt man mit sich selber die Rückrunde bzw muss noch einmal würfeln
+
+
+
+Features:
+- am Anfang würfeln wer anfängt. Außerdem bei der Rückrunde bei Gleichstand der harten wird normalerweise auch Ausgewürfelt wer anfängt
+- Avatare
+- Zähler, wer vie oft verloren hat - Schnapsglas oder Bierflasche?
+- Anleitung
+- Feedback portal
+- .de Domain und portal
+- Timer falls kein Zug Möglich 3 sec? 
+- Timer falls Zug Möglich 10 sec? 
+- Bildschirm sperre deaktivieren im GameScreen
+- Vibration bei Beginn der eigenen Aktivität
+- spectators in Spielerliste nach unten sortieren
+- drag and drop dices
+- connect to running game
