@@ -147,6 +147,8 @@ class GameManager:
         # check game Status
         if(self.games[game_name].game_status != GameState.STARTING and self.games[game_name].game_status != GameState.RUNNING and self.games[game_name].game_status != GameState.SEND_REPORT):
             return self.return_error("Game not running. Is the game already ended?")
+        # Reset Timestamp
+        self.touch_game(game_name)
 
         self.games[game_name].refresh_player(player_name)
         return self.games[game_name]
