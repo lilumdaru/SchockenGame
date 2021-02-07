@@ -223,7 +223,15 @@ class Game:
                     temp_points_low = points
                     player_loosing = player
             i = i+1
-        
+
+        i = 0
+        # safe looser first Half for later use
+        indexLooserFirstHalf = index_looser
+        for player in self.players:
+            if(player.lost_half == 1):
+                indexLooserFirstHalf = i
+            i = i+1
+
         if(temp_points_high == 999):
             # 1 1 1
             self.messages.append(player_winning.player_name + " hat ausgeschockt!")
@@ -268,8 +276,13 @@ class Game:
 
         # change order of List
         if(not self.isBackround()):
-        # change order of List, looser is first now!
-            self.players = self.players[index_looser:] + self.players[:index_looser]
+            if(self.round == Round.FINALE_FH and self.harte_stack == 13):
+                # looser of first half is first
+                self.players = self.players[indexLooserFirstHalf:] + self.players[:indexLooserFirstHalf]
+                pass
+            else:
+            # change order of List, looser is first now!
+                self.players = self.players[index_looser:] + self.players[:index_looser]
         else:
             # Back round: Player with most discs is first now!
             high_discs = 0
