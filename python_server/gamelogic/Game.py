@@ -327,6 +327,10 @@ class Game:
     def changeRound(self, looser):
         if(self.round == Round.ROUND1_FH and self.harte_stack == 0):
             self.round = Round.ROUND1_BACK
+        if(self.round == Round.ROUND2_FH and self.harte_stack == 0):
+            self.round = Round.ROUND2_BACK
+        if(self.round == Round.FINALE_FH and self.harte_stack == 0):
+            self.round = Round.FINALE_BACK
 
         # get number of players with harte:
         nr = 0
@@ -345,9 +349,6 @@ class Game:
                 player.harte = 0
             self.harte_stack = 13
             self.round = Round.ROUND2_FH
-        
-        elif(self.round == Round.ROUND2_FH and self.harte_stack == 0):
-            self.round = Round.ROUND2_BACK
 
         elif(self.round == Round.ROUND2_BACK and one_player):
             if(looser.lost_half == 1): # if looser lost first half, he already has 1 marker!
@@ -361,9 +362,6 @@ class Game:
                 self.harte_stack = 13
                 self.messages.append(looser.player_name + " hat die zweite Hälften verloren. Das Finale beginnt.")
                 self.round = Round.FINALE_FH
-        
-        elif(self.round == Round.FINALE_FH and self.harte_stack == 0):
-            self.round = Round.FINALE_BACK
         
         elif(self.round == Round.FINALE_BACK and one_player):
             self.messages.append(looser.player_name + " hat das Finale verloren, " + looser.player_name + " muss ne Runde geben.")
