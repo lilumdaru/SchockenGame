@@ -2,7 +2,22 @@
 
 All notable changes will be documented in this file.
 
-## [0.1.0] - 2021-01-07
+## [0.1.1] - 2021-??-??
+
+### Added
+
+- nothing
+
+### Changed
+
+- game is started by random player
+- full date is now included in the logs
+
+### Fixed
+
+- nothing
+
+## [0.1.0] - 2021-02-07
 
 ### Added
 

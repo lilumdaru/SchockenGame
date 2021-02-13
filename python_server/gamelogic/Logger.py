@@ -13,7 +13,7 @@ class Logger:
         text = str(input)
 
         now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
+        current_time = now.strftime("%d.%m.%Y %H:%M:%S")
         time_str = ""
         if(self.ADD_TIME):
             time_str = current_time + ": "

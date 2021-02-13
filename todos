@@ -1,19 +1,21 @@
 BUGs:
 - spiel starten nur aus app, aber nicht von WebApp möglich!!
-
-
+    Problem ist: Fehler nicht reproduzierbar...
 
 Features:
-- am Anfang würfeln wer anfängt. Außerdem bei der Rückrunde bei Gleichstand der harten wird normalerweise auch Ausgewürfelt wer anfängt
+- Bei Gleichstand der Harten in Rückrunde: zufällig bestimmen wer anfängt.
 - spectators in Spielerliste nach unten sortieren
-- Zähler, wer vie oft verloren hat - Schnapsglas oder Bierflasche?
+- spectators farbig markieren
+- Zähler, wer wie oft verloren hat - Schnapsglas oder Bierflasche?
 - Anleitung
 - Feedback portal
 - .de Domain und portal
+- playstore upload
 - Timer falls kein Zug Möglich 3 sec? 
 - Timer falls Zug Möglich 10 sec? 
 - Bildschirm sperre deaktivieren im GameScreen
 - Vibration bei Beginn der eigenen Aktivität
 - connect to running game
-- Avatare
+- icon?
 - drag and drop dices
+- Avatare
