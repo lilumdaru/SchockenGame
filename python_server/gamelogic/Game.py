@@ -167,7 +167,10 @@ class Game:
             if(player.player_status != PlayerState.ARRIVED):
                 all_arrived = False
         if(all_arrived):
-            # start game
+            # change order of players to random start player:
+            start_player_id = random.randint(0, len(self.players) -1 )
+            self.players = self.players[start_player_id:] + self.players[:start_player_id]
+            # start first round of game
             self.start_round()
             self.game_status = GameState.RUNNING
 
