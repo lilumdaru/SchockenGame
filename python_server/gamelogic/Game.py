@@ -167,10 +167,7 @@ class Game:
             if(player.player_status != PlayerState.ARRIVED):
                 all_arrived = False
         if(all_arrived):
-            # change order of players to random start player:
-            start_player_id = random.randint(0, len(self.players) -1 )
-            self.players = self.players[start_player_id:] + self.players[:start_player_id]
-            # start first round of game
+            # start a new game round
             self.start_round()
             self.game_status = GameState.RUNNING
 
@@ -183,6 +180,13 @@ class Game:
         
         self.touch_player(player_name)
         self.cleanup()
+
+
+    def randomize_player_order(self):
+        # change order of players to random start player:
+        start_player_id = random.randint(0, len(self.players) -1 )
+        self.players = self.players[start_player_id:] + self.players[:start_player_id]
+        print("randomize players!")
 
 
     def end_round(self):

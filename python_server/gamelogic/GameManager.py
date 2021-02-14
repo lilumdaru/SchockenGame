@@ -101,6 +101,7 @@ class GameManager:
             return self.return_error("Starting game is not possible. Was the game already started?")
         # set game_state = STARTING
         self.games[game_name].set_game_status(GameState.STARTING)
+        self.games[game_name].randomize_player_order()
         return self.games[game_name]
 
 
