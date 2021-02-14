@@ -3,7 +3,6 @@ BUGs:
     Problem ist: Fehler nicht reproduzierbar...
 
 Features:
-- Bei Gleichstand der Harten in Rückrunde: zufällig bestimmen wer anfängt.
 - spectators in Spielerliste nach unten sortieren
 - spectators farbig markieren
 - Zähler, wer wie oft verloren hat - Schnapsglas oder Bierflasche?
@@ -16,6 +15,6 @@ Features:
 - Bildschirm sperre deaktivieren im GameScreen
 - Vibration bei Beginn der eigenen Aktivität
 - connect to running game
-- icon?
+- icon
 - drag and drop dices
 - Avatare

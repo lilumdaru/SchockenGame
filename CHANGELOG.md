@@ -6,7 +6,7 @@ All notable changes will be documented in this file.
 
 ### Added
 
-- nothing
+- if two or more players have the same amount of most discs while playing in backround: A random choosen player of them will became start player.
 
 ### Changed
 
