@@ -186,7 +186,6 @@ class Game:
         # change order of players to random start player:
         start_player_id = random.randint(0, len(self.players) -1 )
         self.players = self.players[start_player_id:] + self.players[:start_player_id]
-        print("randomize players!")
 
 
     def end_round(self):
@@ -286,21 +285,37 @@ class Game:
             if(self.round == Round.FINALE_FH and self.harte_stack == 13):
                 # looser of first half is first
                 self.players = self.players[indexLooserFirstHalf:] + self.players[:indexLooserFirstHalf]
-                pass
             else:
             # change order of List, looser is first now!
                 self.players = self.players[index_looser:] + self.players[:index_looser]
         else:
             # Back round: Player with most discs is first now!
             high_discs = 0
-            i=0
-            index_start = 0
+            # find max discs:
             for player in self.players:
                 if (player.harte > high_discs):
                     high_discs = player.harte
-                    index_start = i
-                i = i +1
-            self.players = self.players[index_start:] + self.players[:index_start]
+            
+            # find all players with max disc:
+            index = 0
+            players_index_max_disc = []
+            names = []
+            for player in self.players:
+                if (player.harte == high_discs):
+                    players_index_max_disc.append(index)
+                    names.append(player.player_name)
+                index = index +1
+            
+            if(len(players_index_max_disc) == 1):
+                # one player with most harte
+                index = players_index_max_disc[0]
+                self.players = self.players[index:] + self.players[:index]
+            else:
+                # two or more players have the same amount of harte
+                nr = random.randint(0, len(players_index_max_disc) -1 )
+                index = players_index_max_disc[nr]
+                self.players = self.players[index:] + self.players[:index]
+                self.messages.append(", ".join(names) + " haben jeweils " + str(high_discs) + " Harte. Der Zufallsgenerator entscheidet: " + self.players[0].player_name + " darf anfangen.")
 
         for player in self.players:
             player.player_status = PlayerState.SEND_REPORT
