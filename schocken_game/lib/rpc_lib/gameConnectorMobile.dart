@@ -221,11 +221,11 @@ class GameConnectorMobile extends GameConnector {
         ..gameName = gameName);
       if (playerList.status == PlayerList_state.LOBBY) {
         // update Playerlist
-        print("call Funktion to update playerlist");
+        timeout = 0;
         updateLobby(playerList.playerNames, "LOBBY");
       } else if (playerList.status == PlayerList_state.STARTING) {
         // command to switch to game screen
-        print("call Function to switch to gamescreen.");
+        timeout = 0;
         updateLobby(playerList.playerNames, "STARTING");
       } else if (playerList.status == PlayerList_state.RUNNING) {
         String title = "Fehler";
@@ -238,11 +238,14 @@ class GameConnectorMobile extends GameConnector {
         String btnText = "OK";
         this._showDialog(title, text, btnText);
       } else if (playerList.status == PlayerList_state.TIMEOUT) {
-        print("getPlayerList Timeout");
+        if (timeout > 5) {
         String title = "Fehler";
         String text = "Server Timeout.";
         String btnText = "OK";
         this._showDialog(title, text, btnText);
+        } else {
+          timeout++;
+        }
       }
     } else {
       // do nothing
