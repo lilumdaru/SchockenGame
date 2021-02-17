@@ -335,14 +335,12 @@ class Game:
             # check if looser already has lost 1 half, if yes, skipp Finale
             if(looser.lost_half == 2):
                 self.messages.append(looser.player_name + " hat beide Hälften verloren, " + looser.player_name + " muss ne Runde geben.")
-                self.round = Round.ROUND1_FH
                 self.resetGame()
             else:
                 self.messages.append("Die Final Runde beginnt.")
         
         elif(self.round == Round.FINALE_FH or self.round == Round.FINALE_BACK):
             self.messages.append(looser.player_name + " hat das Finale verloren, " + looser.player_name + " muss ne Runde geben.")
-            self.round = Round.ROUND1_FH
             self.resetGame()
 
 
@@ -375,7 +373,6 @@ class Game:
         elif(self.round == Round.ROUND2_BACK and one_player):
             if(looser.lost_half == 1): # if looser lost first half, he already has 1 marker!
                 self.messages.append(looser.player_name + " hat beide Hälften verloren, " + looser.player_name + " muss ne Runde geben.")
-                self.round = Round.ROUND1_FH
                 self.resetGame()
             else:
                 looser.lost_half = looser.lost_half +1
@@ -387,7 +384,6 @@ class Game:
         
         elif(self.round == Round.FINALE_BACK and one_player):
             self.messages.append(looser.player_name + " hat das Finale verloren, " + looser.player_name + " muss ne Runde geben.")
-            self.round = Round.ROUND1_FH
             self.resetGame()
 
 
@@ -396,6 +392,7 @@ class Game:
             player.harte = 0
             player.lost_half = 0
         self.harte_stack = 13
+        self.round == Round.ROUND1_FH
         self.messages.append("Ein neues Spiel startet.")
         # include new joined players here
 
@@ -453,9 +450,18 @@ class Game:
                 players_to_del.append(player)
 
         for player in players_to_del:
+            # check if timeout player is active
             if(player.player_status == PlayerState.ACTIVE):
                 self.end_turn(player.player_name)
-            self.players.remove(player)
+            # check if timeout player is finale attende:
+            if(player.lost_half > 0):
+                self.messages.append(player.player_name + " hat die Verbindung verloren. Damit fehlt nun ein Teilnehmer für das Finale.")
+                self.players.remove(player)
+                self.end_round()
+                self.randomize_player_order()
+                self.resetGame()
+            else:
+                self.players.remove(player)
 
 
     def touch_player(self, player_name):
