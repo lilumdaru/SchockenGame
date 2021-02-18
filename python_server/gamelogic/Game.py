@@ -358,9 +358,9 @@ class Game:
         for player in self.players:
             if( player.harte != 0):
                 nr = nr + 1
-        if(nr == 1):
+        if(nr <= 1):
             one_player = True
-        logger.log("player_name: " + looser.player_name + "nr: " + str(nr) + ", one_player: " + str(one_player))
+        logger.log("player_name: " + looser.player_name + ", nr: " + str(nr) + ", one_player: " + str(one_player))
 
         if(self.round == Round.ROUND1_BACK and one_player ):
             looser.lost_half = 1
@@ -379,7 +379,7 @@ class Game:
                 for player in self.players:
                     player.harte = 0
                 self.harte_stack = 13
-                self.messages.append(looser.player_name + " hat die zweite Hälften verloren. Das Finale beginnt.")
+                self.messages.append(looser.player_name + " hat die zweite Hälfte verloren. Das Finale beginnt.")
                 self.round = Round.FINALE_FH
         
         elif(self.round == Round.FINALE_BACK and one_player):
@@ -392,7 +392,7 @@ class Game:
             player.harte = 0
             player.lost_half = 0
         self.harte_stack = 13
-        self.round == Round.ROUND1_FH
+        self.round = Round.ROUND1_FH
         self.messages.append("Ein neues Spiel startet.")
         # include new joined players here
 
