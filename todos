@@ -1,6 +1,8 @@
 BUGs:
 - spiel starten nur aus app, aber nicht von WebApp möglich!!
     Problem ist: Fehler nicht reproduzierbar...
+    Server timeout bei spielstart?? timing problem?!?
+    - Testweise ein healing-timeout im lobby view implementiert
 
 Features:
 - spectators in Spielerliste nach unten sortieren
@@ -10,8 +12,7 @@ Features:
 - Feedback portal
 - .de Domain und portal
 - playstore upload
-- Timer falls kein Zug Möglich 3 sec? 
-- Timer falls Zug Möglich 10 sec? 
+- show timeout in APP Gui and add to protobuf
 - Bildschirm sperre deaktivieren im GameScreen
 - Vibration bei Beginn der eigenen Aktivität
 - connect to running game

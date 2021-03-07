@@ -27,6 +27,10 @@ class Game:
         self.MAX_PLAYERS = 10
         self.send_report = False
         self.round = Round.ROUND1_FH
+        self.timeout_no_rolls = 5
+        self.timeout_rolls_possible = 60
+        self.last_activity = time.time() + 60
+        self.timeout = 0
 
 
     def player_name_exists(self, player_name):
@@ -97,6 +101,8 @@ class Game:
 
         # increase active_roll by 1
         self.active_roll = self.active_roll +1
+        # set time for turn timeout:
+        self.last_activity = time.time()
 
 
     def turn_six(self, player_name):
@@ -149,6 +155,9 @@ class Game:
             else:
                 search_next_player = False
                 self.end_round()
+        
+        # set time for turn timeout:
+        self.last_activity = time.time()
     
 
     def refresh_player(self, player_name):
@@ -177,6 +186,9 @@ class Game:
             current_player.player_status = PlayerState.ARRIVED
         else:
             self.send_report = False
+        
+        # check timeout
+        self.check_timeout(player_name)
         
         self.touch_player(player_name)
         self.cleanup()
@@ -470,3 +482,20 @@ class Game:
             if (player.player_name == player_name):
                 player.last_action = time.time()
                 break
+
+
+    def check_timeout(self, player_name):
+        # leave function if not executed by active player
+        if(player_name != self.players[self.id_player_active].player_name):
+            return
+        
+        if(self.active_roll == self.max_rolls):
+            # use self.timeout_no_rolls
+            self.timeout = self.timeout_no_rolls - (time.time() - self.last_activity)
+            if(time.time() - self.last_activity > self.timeout_no_rolls):
+                self.end_turn(self.players[self.id_player_active].player_name)
+        else:
+            # use self.timeout_rolls_possible
+            self.timeout = self.timeout_rolls_possible - (time.time() - self.last_activity)
+            if(time.time() - self.last_activity > self.timeout_rolls_possible):
+                self.end_turn(self.players[self.id_player_active].player_name)
