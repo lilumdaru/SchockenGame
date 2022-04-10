@@ -35,7 +35,7 @@ class GameState(Enum):
 
 
 class Round(Enum):
-    ROUND1_FH = 0 # FH = First Half
+    ROUND1_FH = 0  # FH = First Half
     ROUND1_BACK = 1
     ROUND2_FH = 2
     ROUND2_BACK = 3
