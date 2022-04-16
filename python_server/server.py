@@ -5,6 +5,7 @@ from concurrent import futures
 import logging
 import grpc
 import sys, os
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "gamelogic"))
 
 from enum import Enum
@@ -17,6 +18,7 @@ from gamelogic.MyEnums import GameState, PlayerState, Round
 
 logger = Logger()
 
+
 class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
     GM = GameManager()
 
@@ -26,50 +28,62 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
         newGame = schocken_rpc_pb2.GameID()
         newGame.game_name = GameData.game_name
         newGame.game_nr = GameData.game_id
-        if(GameData.game_status == GameState.ERROR):
+        if GameData.game_status == GameState.ERROR:
             newGame.game_nr = -1
             newGame.error_msg = GameData.error_msg
         logger.log("GameData.game_name: " + GameData.game_name)
         return newGame
 
     def registerPlayer(self, request, context):
-        logger.log("register Player: " + request.player_name +
-              " for Game: " + request.game_name)
-        GameData = self.GM.register_player(request.game_name.upper(), request.player_name)
+        logger.log(
+            "register Player: "
+            + request.player_name
+            + " for Game: "
+            + request.game_name
+        )
+        GameData = self.GM.register_player(
+            request.game_name.upper(), request.player_name
+        )
         reg_res = schocken_rpc_pb2.RegistrationResponse()
         reg_res.return_value = 0
         reg_res.player_nr = 2
         reg_res.game_nr = GameData.game_id
         reg_res.error_msg = GameData.error_msg
-        if( (GameData.game_status == GameState.ERROR ) ):
+        if GameData.game_status == GameState.ERROR:
             reg_res.return_value = -1
         return reg_res
 
     def getPlayerList(self, request, context):
-        # logger.log("getPlayerList request. GameNr: " + 
+        # logger.log("getPlayerList request. GameNr: " +
         #       str(request.game_nr) + " GameName: " + request.game_name)
-        GameData = self.GM.get_player_list(request.game_name.upper(), request.player_name)
-        
+        GameData = self.GM.get_player_list(
+            request.game_name.upper(), request.player_name
+        )
+
         player_list = schocken_rpc_pb2.PlayerList()
 
-        if(GameData.game_status == GameState.LOBBY):
+        if GameData.game_status == GameState.LOBBY:
             player_list.status = schocken_rpc_pb2.PlayerList.state.LOBBY
-        elif(GameData.game_status == GameState.STARTING):
+        elif GameData.game_status == GameState.STARTING:
             player_list.status = schocken_rpc_pb2.PlayerList.state.STARTING
         else:
             player_list.status = schocken_rpc_pb2.PlayerList.state.ERROR
         for player in GameData.players:
             player_list.player_names.append(player.player_name)
-            
+
         return player_list
 
     def startGame(self, request, context):
-        logger.log("startGame request. GameNr: " +
-              str(request.game_nr) + " GameName: " + request.game_name)
+        logger.log(
+            "startGame request. GameNr: "
+            + str(request.game_nr)
+            + " GameName: "
+            + request.game_name
+        )
         GameData = self.GM.start_game(request.game_name.upper())
 
         start_game_resp = schocken_rpc_pb2.StartGameResponse()
-        if(GameData.game_status == GameState.ERROR):
+        if GameData.game_status == GameState.ERROR:
             start_game_resp.return_value = 1
             start_game_resp.error_msg = GameData.message
         else:
@@ -80,7 +94,9 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
     def touchDice(self, request, context):
         # logger.log("touchDice request. dice_id: " +
         #       str(request.dice_id) + " player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
-        GameData = self.GM.touch_dice(request.game_name.upper(), request.player_name, request.dice_id)
+        GameData = self.GM.touch_dice(
+            request.game_name.upper(), request.player_name, request.dice_id
+        )
 
         return self.convertGamedata(GameData)
 
@@ -116,57 +132,69 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
             temp_player = schocken_rpc_pb2.RpcPlayer()
             temp_player.player_name = player.player_name
 
-            if(player.player_status == PlayerState.ACTIVE):
-                temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.ACTIVE
-            elif(player.player_status == PlayerState.PASSIVE):
-                temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.PASSIVE
-            elif(player.player_status == PlayerState.SPEC):
+            if player.player_status == PlayerState.ACTIVE:
+                temp_player.player_status = (
+                    schocken_rpc_pb2.RpcPlayer.player_state.ACTIVE
+                )
+            elif player.player_status == PlayerState.PASSIVE:
+                temp_player.player_status = (
+                    schocken_rpc_pb2.RpcPlayer.player_state.PASSIVE
+                )
+            elif player.player_status == PlayerState.SPEC:
                 temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.SPEC
-            elif(player.player_status == PlayerState.LEFT):
+            elif player.player_status == PlayerState.LEFT:
                 temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.LEFT
-            elif(player.player_status == PlayerState.ARRIVED):
-                temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.OTHER
-            elif(player.player_status == PlayerState.UNINITIALIZED):
-                temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.OTHER
-            elif(player.player_status == PlayerState.SEND_REPORT):
-                temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.OTHER
+            elif player.player_status == PlayerState.ARRIVED:
+                temp_player.player_status = (
+                    schocken_rpc_pb2.RpcPlayer.player_state.OTHER
+                )
+            elif player.player_status == PlayerState.UNINITIALIZED:
+                temp_player.player_status = (
+                    schocken_rpc_pb2.RpcPlayer.player_state.OTHER
+                )
+            elif player.player_status == PlayerState.SEND_REPORT:
+                temp_player.player_status = (
+                    schocken_rpc_pb2.RpcPlayer.player_state.OTHER
+                )
             else:
-                temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.ERROR
-            
+                temp_player.player_status = (
+                    schocken_rpc_pb2.RpcPlayer.player_state.ERROR
+                )
+
             temp_player.harte = player.harte
             temp_player.lost_half = player.lost_half
             del temp_player.dice[:]
             temp_player.dice.extend(player.dices)
             rpc_game_data.players.append(temp_player)
 
-        if(gameData.game_status == GameState.LOBBY):
+        if gameData.game_status == GameState.LOBBY:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.LOBBY
-        elif(gameData.game_status == GameState.STARTING):
+        elif gameData.game_status == GameState.STARTING:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.STARTING
-        elif(gameData.game_status == GameState.ENDED):
+        elif gameData.game_status == GameState.ENDED:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ENDED
-        elif(gameData.game_status == GameState.RUNNING):
+        elif gameData.game_status == GameState.RUNNING:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.RUNNING
-        elif(gameData.game_status == GameState.SEND_REPORT):
+        elif gameData.game_status == GameState.SEND_REPORT:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.RUNNING
-        elif(gameData.game_status == GameState.TIMEOUT):
+        elif gameData.game_status == GameState.TIMEOUT:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.TIMEOUT
-        elif(gameData.game_status == GameState.ERROR):
+        elif gameData.game_status == GameState.ERROR:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ERROR
         else:
             rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ERROR
 
-        if(gameData.round == Round.ROUND1_FH):
+        if gameData.round == Round.ROUND1_FH:
             rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND1_FH
-        elif(gameData.round == Round.ROUND1_BACK):
+        elif gameData.round == Round.ROUND1_BACK:
             rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND1_BACK
-        elif(gameData.round == Round.ROUND2_FH):
+        elif gameData.round == Round.ROUND2_FH:
             rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND2_FH
-        elif(gameData.round == Round.ROUND2_BACK):
+        elif gameData.round == Round.ROUND2_BACK:
             rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND2_BACK
-        elif(gameData.round == Round.FINALE_FH):
+        elif gameData.round == Round.FINALE_FH:
             rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.FINALE_FH
-        elif(gameData.round == Round.FINALE_BACK):
+        elif gameData.round == Round.FINALE_BACK:
             rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.FINALE_BACK
 
         rpc_game_data.active_roll = gameData.active_roll
@@ -183,13 +211,14 @@ class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     schocken_rpc_pb2_grpc.add_SchockenConnectorServicer_to_server(
-        SchockenConnector(), server)
-    server.add_insecure_port('[::]:50051')
+        SchockenConnector(), server
+    )
+    server.add_insecure_port("[::]:50051")
     logger.log("starting Server")
     server.start()
     server.wait_for_termination()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logging.basicConfig()
     serve()
