@@ -1,4 +1,4 @@
-from MyEnums import PlayerState  # pylint: disable=import-error
+from gamelogic.MyEnums import PlayerState  # pylint: disable=import-error
 
 import random
 import time

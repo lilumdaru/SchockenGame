@@ -1,8 +1,12 @@
-from MyEnums import GameState, PlayerState, Round  # pylint: disable=import-error
-from Player import Player  # pylint: disable=import-error
+from gamelogic.MyEnums import (
+    Round,
+    GameState,
+    PlayerState,
+)  # pylint: disable=import-error
+from gamelogic.Player import Player  # pylint: disable=import-error
 import random
 import time
-from Logger import Logger  # pylint: disable=import-error
+from gamelogic.Logger import Logger
 
 random.seed()
 logger = Logger()
