@@ -1,14 +1,6 @@
-# from MyEnums import GameState
-# from Player import Player
-import os
-import sys
-from enum import Enum
-
-# sys.path.append(os.path.join(os.path.dirname(__file__), "..", "DataStructure"))
-from Player import Player
-from Game import Game  # pylint: disable=import-error
-from MyEnums import GameState
-from Logger import Logger
+from gamelogic.Game import Game  # pylint: disable=import-error
+from gamelogic.MyEnums import GameState
+from gamelogic.Logger import Logger
 import random
 import string
 import time

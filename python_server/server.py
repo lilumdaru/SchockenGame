@@ -1,224 +1,159 @@
 # Server Stub for Schocken app implementation:
 # pylint: disable=E1101
 
-from concurrent import futures
 import logging
-import grpc
-import sys, os
+from flask import Flask, request, jsonify
+from waitress import serve
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "gamelogic"))
-
-from enum import Enum
-from gamelogic.Logger import Logger
-from rpc_lib import schocken_rpc_pb2
-from rpc_lib import schocken_rpc_pb2_grpc
-
+from gamelogic.Game import Game
+from interface.if_game_data import GameData
+from gamelogic.Player import Player
+from gamelogic.MyEnums import GameState
 from gamelogic.GameManager import GameManager
-from gamelogic.MyEnums import GameState, PlayerState, Round
 
-logger = Logger()
+app = Flask(__name__)
 
 
-class SchockenConnector(schocken_rpc_pb2_grpc.SchockenConnector):
-    GM = GameManager()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    def registerGame(self, request, context):
-        logger.log("registerGame by: " + request.player_name)
-        GameData = self.GM.register_game()
-        newGame = schocken_rpc_pb2.GameID()
-        newGame.game_name = GameData.game_name
-        newGame.game_nr = GameData.game_id
-        if GameData.game_status == GameState.ERROR:
-            newGame.game_nr = -1
-            newGame.error_msg = GameData.error_msg
-        logger.log("GameData.game_name: " + GameData.game_name)
-        return newGame
+GM = GameManager()
 
-    def registerPlayer(self, request, context):
-        logger.log(
+
+@app.post("/game")
+def register_game():
+    answer = {"game_name": "", "game_id": 0, "error_msg": "Error with request"}
+    if request.is_json:
+        content = request.get_json()
+        logger.info("registerGame by: " + content["player_name"])
+
+        game = GM.register_game()
+        answer["game_id"] = game.game_id
+        answer["game_name"] = game.game_name
+        answer["error_msg"] = game.error_msg
+        logger.info("GameData.game_name: " + game.game_name)
+
+        return answer, 200
+    return answer, 400
+
+
+@app.post("/player")
+def register_player():
+
+    answer = {"game_id": 0, "error_msg": "Error with request"}
+    if request.is_json:
+
+        content = request.get_json()
+        logger.info(
             "register Player: "
-            + request.player_name
+            + content["player_name"]
             + " for Game: "
-            + request.game_name
+            + content["game_name"]
         )
-        GameData = self.GM.register_player(
-            request.game_name.upper(), request.player_name
+        game = GM.register_player(content["game_name"].upper(), content["player_name"])
+        answer["game_id"] = game.game_id
+        answer["error_msg"] = game.error_msg
+        return answer, 200
+    return answer, 400
+
+
+@app.get("/playerlist")
+def get_playerlist():
+    answer = {
+        "game_state": GameState.ERROR,
+        "player_names": [],
+        "error_msg": "Error with request",
+    }
+
+    if isinstance(request.args["player_name"], str) and isinstance(
+        request.args["game_name"], str
+    ):
+        game = GM.get_player_list(
+            request.args["game_name"].upper(), request.args["player_name"]
         )
-        reg_res = schocken_rpc_pb2.RegistrationResponse()
-        reg_res.return_value = 0
-        reg_res.player_nr = 2
-        reg_res.game_nr = GameData.game_id
-        reg_res.error_msg = GameData.error_msg
-        if GameData.game_status == GameState.ERROR:
-            reg_res.return_value = -1
-        return reg_res
+        answer["player_names"] = []
+        for player in game.players:
+            answer["player_names"].append(player.player_name)
 
-    def getPlayerList(self, request, context):
-        # logger.log("getPlayerList request. GameNr: " +
-        #       str(request.game_nr) + " GameName: " + request.game_name)
-        GameData = self.GM.get_player_list(
-            request.game_name.upper(), request.player_name
+        answer["game_state"] = game.game_status
+        answer["error_msg"] = game.error_msg
+        return answer, 200
+    return answer, 400
+
+
+@app.post("/gamestart")
+def start_game():
+    answer = {"error_msg": "Error with request"}
+    if request.is_json:
+        content = request.get_json()
+        game = GM.start_game(content["game_name"].upper())
+        answer["error_msg"] = game.error_msg
+        return answer, 200
+    return answer, 400
+
+
+@app.post("/touch_dice")
+def touch_dice():
+    answer = {"error_msg": "Error with request"}
+    if request.is_json:
+        content = request.get_json()
+        # logger.info("game_name: " + content["game_name"])
+        # logger.info("player_name: " + content["player_name"])
+        # logger.info("dice_id: " + content["dice_id"])
+        game = GM.touch_dice(
+            content["game_name"].upper(), content["player_name"], content["dice_id"]
         )
-
-        player_list = schocken_rpc_pb2.PlayerList()
-
-        if GameData.game_status == GameState.LOBBY:
-            player_list.status = schocken_rpc_pb2.PlayerList.state.LOBBY
-        elif GameData.game_status == GameState.STARTING:
-            player_list.status = schocken_rpc_pb2.PlayerList.state.STARTING
-        else:
-            player_list.status = schocken_rpc_pb2.PlayerList.state.ERROR
-        for player in GameData.players:
-            player_list.player_names.append(player.player_name)
-
-        return player_list
-
-    def startGame(self, request, context):
-        logger.log(
-            "startGame request. GameNr: "
-            + str(request.game_nr)
-            + " GameName: "
-            + request.game_name
-        )
-        GameData = self.GM.start_game(request.game_name.upper())
-
-        start_game_resp = schocken_rpc_pb2.StartGameResponse()
-        if GameData.game_status == GameState.ERROR:
-            start_game_resp.return_value = 1
-            start_game_resp.error_msg = GameData.message
-        else:
-            start_game_resp.return_value = 0
-            start_game_resp.error_msg = ""
-        return start_game_resp
-
-    def touchDice(self, request, context):
-        # logger.log("touchDice request. dice_id: " +
-        #       str(request.dice_id) + " player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
-        GameData = self.GM.touch_dice(
-            request.game_name.upper(), request.player_name, request.dice_id
-        )
-
-        return self.convertGamedata(GameData)
-
-    def touchCup(self, request, context):
-        # logger.log("touchCup player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
-        #       "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
-        GameData = self.GM.touch_cup(request.game_name.upper(), request.player_name)
-        return self.convertGamedata(GameData)
-
-    def endTurn(self, request, context):
-        # logger.log("endTurn player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
-        #       "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
-        GameData = self.GM.end_turn(request.game_name.upper(), request.player_name)
-        return self.convertGamedata(GameData)
-
-    def refreshGame(self, request, context):
-        # logger.log("refreshGame player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
-        #       "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
-        GameData = self.GM.refresh_game(request.game_name.upper(), request.player_name)
-        return self.convertGamedata(GameData)
-
-    def turnSix(self, request, context):
-        # logger.log("turnSix player_nr: " + str(request.player_nr) + " game_nr: " + str(request.game_nr) +
-        #       "player_name: " + str(request.player_name) + " game_name: " + str(request.game_name))
-        GameData = self.GM.turn_six(request.game_name.upper(), request.player_name)
-        return self.convertGamedata(GameData)
-
-    def convertGamedata(self, gameData):
-        rpc_game_data = schocken_rpc_pb2.RpcGameData()
-        rpc_game_data.game_name = gameData.game_name
-
-        for player in gameData.players:
-            temp_player = schocken_rpc_pb2.RpcPlayer()
-            temp_player.player_name = player.player_name
-
-            if player.player_status == PlayerState.ACTIVE:
-                temp_player.player_status = (
-                    schocken_rpc_pb2.RpcPlayer.player_state.ACTIVE
-                )
-            elif player.player_status == PlayerState.PASSIVE:
-                temp_player.player_status = (
-                    schocken_rpc_pb2.RpcPlayer.player_state.PASSIVE
-                )
-            elif player.player_status == PlayerState.SPEC:
-                temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.SPEC
-            elif player.player_status == PlayerState.LEFT:
-                temp_player.player_status = schocken_rpc_pb2.RpcPlayer.player_state.LEFT
-            elif player.player_status == PlayerState.ARRIVED:
-                temp_player.player_status = (
-                    schocken_rpc_pb2.RpcPlayer.player_state.OTHER
-                )
-            elif player.player_status == PlayerState.UNINITIALIZED:
-                temp_player.player_status = (
-                    schocken_rpc_pb2.RpcPlayer.player_state.OTHER
-                )
-            elif player.player_status == PlayerState.SEND_REPORT:
-                temp_player.player_status = (
-                    schocken_rpc_pb2.RpcPlayer.player_state.OTHER
-                )
-            else:
-                temp_player.player_status = (
-                    schocken_rpc_pb2.RpcPlayer.player_state.ERROR
-                )
-
-            temp_player.harte = player.harte
-            temp_player.lost_half = player.lost_half
-            del temp_player.dice[:]
-            temp_player.dice.extend(player.dices)
-            rpc_game_data.players.append(temp_player)
-
-        if gameData.game_status == GameState.LOBBY:
-            rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.LOBBY
-        elif gameData.game_status == GameState.STARTING:
-            rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.STARTING
-        elif gameData.game_status == GameState.ENDED:
-            rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ENDED
-        elif gameData.game_status == GameState.RUNNING:
-            rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.RUNNING
-        elif gameData.game_status == GameState.SEND_REPORT:
-            rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.RUNNING
-        elif gameData.game_status == GameState.TIMEOUT:
-            rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.TIMEOUT
-        elif gameData.game_status == GameState.ERROR:
-            rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ERROR
-        else:
-            rpc_game_data.game_status = schocken_rpc_pb2.RpcGameData.game_state.ERROR
-
-        if gameData.round == Round.ROUND1_FH:
-            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND1_FH
-        elif gameData.round == Round.ROUND1_BACK:
-            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND1_BACK
-        elif gameData.round == Round.ROUND2_FH:
-            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND2_FH
-        elif gameData.round == Round.ROUND2_BACK:
-            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.ROUND2_BACK
-        elif gameData.round == Round.FINALE_FH:
-            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.FINALE_FH
-        elif gameData.round == Round.FINALE_BACK:
-            rpc_game_data.round = schocken_rpc_pb2.RpcGameData.game_round.FINALE_BACK
-
-        rpc_game_data.active_roll = gameData.active_roll
-        rpc_game_data.max_rolls = gameData.max_rolls
-        rpc_game_data.messages.extend(gameData.messages)
-        rpc_game_data.button_turn_6 = gameData.turn_six_button
-        rpc_game_data.generate_report = gameData.send_report
-        rpc_game_data.discs_on_stack = gameData.harte_stack
-        rpc_game_data.error_msg = gameData.error_msg
-
-        return rpc_game_data
+        return GameData(game).get_json(), 200
+    return answer, 400
 
 
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    schocken_rpc_pb2_grpc.add_SchockenConnectorServicer_to_server(
-        SchockenConnector(), server
-    )
-    server.add_insecure_port("[::]:50051")
-    logger.log("starting Server")
-    server.start()
-    server.wait_for_termination()
+@app.post("/touch_cup")
+def touch_cup():
+    answer = {"error_msg": "Error with request"}
+    if request.is_json:
+        content = request.get_json()
+        # logger.info("game_name: " + content["game_name"])
+        # logger.info("player_name: " + content["player_name"])
+        game = GM.touch_cup(content["game_name"].upper(), content["player_name"])
+        return GameData(game).get_json(), 200
+    return answer, 400
+
+
+@app.post("/turn")
+def end_turn():
+    answer = {"error_msg": "Error with request"}
+    if request.is_json:
+        content = request.get_json()
+        # logger.info("game_name: " + content["game_name"])
+        # logger.info("player_name: " + content["player_name"])
+        game = GM.end_turn(content["game_name"].upper(), content["player_name"])
+        return GameData(game).get_json(), 200
+    return answer, 400
+
+
+@app.get("/game")
+def refresh_game():
+    answer = {"error_msg": "Error with request"}
+    if request.is_json:
+        content = request.get_json()
+        # logger.info("game_name: " + content["game_name"])
+        # logger.info("player_name: " + content["player_name"])
+        game = GM.refresh_game(content["game_name"].upper(), content["player_name"])
+        return GameData(game).get_json(), 200
+    return answer, 400
+
+
+@app.post("/six")
+def turn_sixer():
+    answer = {"error_msg": "Error with request"}
+    if request.is_json:
+        content = request.get_json()
+        # logger.info("game_name: " + content["game_name"])
+        # logger.info("player_name: " + content["player_name"])
+        game = GM.turn_six(content["game_name"].upper(), content["player_name"])
+        return GameData(game).get_json(), 200
+    return answer, 400
 
 
 if __name__ == "__main__":
-    logging.basicConfig()
-    serve()
+    serve(app, host="0.0.0.0", port=8080)
