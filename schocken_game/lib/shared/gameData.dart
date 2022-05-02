@@ -1,9 +1,10 @@
+import 'package:schocken_game/shared/sharedEnums.dart';
 import 'player.dart';
 
 class GameData {
   String gameName = "";
   List<Player> players = [];
-  GameStatus state;
+  GameState state;
   Player activePlayer;
   int activeRoll;
   int maxRolls;
@@ -13,15 +14,4 @@ class GameData {
   bool sendReport = false;
   int discsOnStack = 0;
   GameRound gameRound;
-}
-
-enum GameStatus { LOBBY, STARTING, RUNNING, ENDED, TIMEOUT, ERROR }
-
-enum GameRound {
-  ROUND1_FH,
-  ROUND1_BACK,
-  ROUND2_FH,
-  ROUND2_BACK,
-  FINALE_FH,
-  FINALE_BACK
 }

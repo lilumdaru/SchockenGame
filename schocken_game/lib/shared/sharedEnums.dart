@@ -1,0 +1,20 @@
+enum GameState { LOBBY, STARTING, RUNNING, ENDED, TIMEOUT, ERROR }
+
+enum PlayerState {
+  ACTIVE,
+  PASSIVE,
+  SPEC,
+  LEFT,
+  ARRIVED,
+  UNINITIALIZED,
+  SEND_REPORT
+}
+
+enum GameRound {
+  ROUND1_FH, // FH = First Half
+  ROUND1_BACK,
+  ROUND2_FH,
+  ROUND2_BACK,
+  FINALE_FH,
+  FINALE_BACK
+}

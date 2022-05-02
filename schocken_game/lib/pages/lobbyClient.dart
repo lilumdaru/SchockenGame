@@ -9,7 +9,7 @@ class LobbyClient extends StatefulWidget {
 
 class _LobbyClientState extends State<LobbyClient> {
   Map data = {};
-  GameConnector myGC;
+  GameConnector myGC = GameConnector();
   Timer timer;
   List<String> players = [];
   String gameName = "";
@@ -20,8 +20,7 @@ class _LobbyClientState extends State<LobbyClient> {
   void initState() {
     super.initState();
     gameStatus = "";
-    this.myGC = GameConnector.instance;
-    this.myGC.setShowdialog(_showDialog);
+    // this.myGC.setShowdialog(_showDialog);
     timer = Timer.periodic(Duration(milliseconds: refreshIntervall),
         (Timer t) => getNewPlayerlist());
   }

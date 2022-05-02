@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../rpc_lib/gameConnector.dart';
 import '../shared/gameData.dart';
@@ -17,10 +16,14 @@ class _GameState extends State<Game> {
   GameData myGameData;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     data = ModalRoute.of(context).settings.arguments;
     myGC = data["GameConnector"];
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final width = size.width;
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schocken_game/shared/sharedEnums.dart';
 import 'package:schocken_game/widgets/playerCard.dart';
 import '../rpc_lib/gameConnector.dart';
 import '../shared/gameData.dart';
@@ -73,7 +74,7 @@ class GameManagerState extends State<GameManager> {
 
     // GUI Bugfix: fill active Player:
     for (Player player in newData.players) {
-      if (player.playerState == playerStatus.ACTIVE) {
+      if (player.playerState == PlayerState.ACTIVE) {
         newData.activePlayer = player;
         break;
       }
@@ -92,8 +93,8 @@ class GameManagerState extends State<GameManager> {
     }
     newData.activeCupUp = cupUp;
 
-    if (newData.state == GameStatus.LOBBY ||
-        newData.state == GameStatus.RUNNING) {
+    if (newData.state == GameState.LOBBY ||
+        newData.state == GameState.RUNNING) {
       setState(() {
         myGameData = newData;
       });
@@ -105,10 +106,11 @@ class GameManagerState extends State<GameManager> {
     // init myGameData
     if (firstRun) {
       myGC = widget.myGC;
-      myGC.setShowdialog(this._showDialog);
+      // myGC.setShowdialog(this._showDialog);
 
       // fill data structure to avoid errors
-      myGameData.activePlayer = new Player("", playerStatus.ACTIVE, 0, []);
+      myGameData.activePlayer =
+          new Player("", PlayerState.ACTIVE, 0, [], false);
       myGameData.activeCupUp = true;
       firstRun = false;
     }

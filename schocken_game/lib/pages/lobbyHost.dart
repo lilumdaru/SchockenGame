@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:schocken_game/rpc_lib/gameConnector.dart';
+import 'package:schocken_game/shared/sharedEnums.dart';
 
 class LobbyHost extends StatefulWidget {
   @override
@@ -10,18 +11,17 @@ class LobbyHost extends StatefulWidget {
 
 class _LobbyHostState extends State<LobbyHost> {
   Map data = {};
-  GameConnector myGC;
+  GameConnector myGC = GameConnector();
   Timer timer;
   List<String> players = [];
   String gameName = "";
   int refreshIntervall = 500; // ms
-  String gameStatus = "";
+  GameState gameStatus = GameState.LOBBY;
 
   @override
   void initState() {
     super.initState();
-    this.myGC = GameConnector.instance;
-    this.myGC.setShowdialog(_showDialog);
+    // this.myGC.setShowdialog(_showDialog);
     timer = Timer.periodic(Duration(milliseconds: refreshIntervall),
         (Timer t) => getNewPlayerlist());
   }
@@ -36,7 +36,7 @@ class _LobbyHostState extends State<LobbyHost> {
     myGC.getPlayerList(updateLobby);
   }
 
-  void updateLobby(List<String> playerNames, String status) {
+  void updateLobby(List<String> playerNames, GameState status) {
     if (!mounted) return;
     setState(() => this.players = playerNames);
     setState(() => this.gameStatus = status);
@@ -53,6 +53,7 @@ class _LobbyHostState extends State<LobbyHost> {
     if (myGC.gameNr == -10) {
       myGC.gameNr = -9;
       this.myGC.registerGame(data["playerName"], updateGameName);
+      this.myGC.registerPlayer(data["playerName"], data["gameName"]);
       this.myGC.playerName = data["playerName"];
     }
 

@@ -2,6 +2,10 @@
 
 This is a virtual version of the pub game called "Schocken" or "Meier-Tod".
 
-The client is written in Flutter and the server in python. GRPC is used as the interface.
+The client is written in Flutter and the server in python. REST is used as the interface.
 
-This project is ended.
+## Build project
+
+after installing flutter:
+
+flutter build web

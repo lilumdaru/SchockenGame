@@ -1,72 +1,167 @@
-import 'schocken_rpc.pb.dart';
-import 'schocken_rpc.pbgrpc.dart';
-import '../shared/gameData.dart';
-import '../shared/player.dart';
-import 'gameConnectorStub.dart'
-    if (dart.library.io) 'gameConnectorMobile.dart'
-    if (dart.library.js) 'gameConnectorWeb.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:schocken_game/rpc_lib/respGameData.dart';
+import 'package:schocken_game/rpc_lib/respGetPlayerList.dart';
+import 'package:schocken_game/rpc_lib/respRegisterGame.dart';
+import 'package:schocken_game/rpc_lib/respRegisterPlayer.dart';
+import 'package:schocken_game/rpc_lib/respStartGame.dart';
 
-abstract class GameConnector {
+import '../shared/gameData.dart';
+import 'package:http/http.dart' as http;
+
+class GameConnector {
   int gameNr = -10;
   String gameName = "";
   String playerName = "";
-  int playerNr = 0;
+  // int playerNr = 0;
   bool registered = false;
-  String backendIP = 'localhost'; // host
-  int port = 50051;
-  int timeout = 0;
+  String backendIP = 'localhost';
+  final HEADER = <String, String>{
+    'Content-Type': 'application/json; charset=UTF-8',
+  };
 
-  static GameConnector _instance;
-
-  static GameConnector get instance {
-    _instance ??= getGameConnector();
-    _instance.gameNr = -10;
-    _instance.gameName = "";
-    _instance.registered = false;
-    return _instance;
+  GameConnector() {
+    print("init Rest GC");
   }
 
-  GameConnector();
+  Future<http.Response> getRequest(String request) async {
+    final response = await http.get(Uri.parse("backendIP" + "/" + request));
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('http.get failed!');
+      // todo healing counter?
+    }
+  }
 
-  void setShowdialog(Function showDialog);
+  Future<http.Response> postRequest(String request, String postBody) async {
+    final response = await http.post(
+      Uri.parse("backendIP" + "/" + request),
+      headers: HEADER,
+      body: postBody,
+    );
 
-  Future<GameData> touchDice(int diceId);
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('http.post failed!');
+      // todo healing counter?
+    }
+  }
 
-  Future<GameData> touchCup();
+  Future<void> registerGame(String playerName, Function updateGameName) async {
+    String postBody = jsonEncode(<String, String>{
+      "player_name": playerName,
+    });
+    var response = await postRequest("game", postBody);
+    var respRegGame = RespRegisterGame.fromJson(jsonDecode(response.body));
+    if (respRegGame.errorMsg != "") {
+      throw Exception('Server Error: ' + respRegGame.errorMsg);
+    }
+    gameNr = respRegGame.gameId;
+    gameName = respRegGame.gameName;
+  }
 
-  Future<GameData> endTurn();
+  Future<GameData> touchDice(int diceId) async {
+    String postBody = jsonEncode(<String, String>{
+      "player_name": this.playerName,
+      "game_name": this.gameName,
+      "dice_id": diceId.toString(),
+    });
+    var response = await postRequest("dice", postBody);
+    var respGameData = RespGameData.fromJson(jsonDecode(response.body));
+    if (respGameData.errorMsg != "") {
+      throw Exception('Server Error: ' + respGameData.errorMsg);
+    }
+    return respGameData.parseToGameData();
+  }
 
-  Future<GameData> refreshGame();
+  Future<GameData> touchCup() async {
+    String postBody = jsonEncode(<String, String>{
+      "player_name": this.playerName,
+      "game_name": this.gameName,
+    });
+    var response = await postRequest("cup", postBody);
+    var respGameData = RespGameData.fromJson(jsonDecode(response.body));
+    if (respGameData.errorMsg != "") {
+      throw Exception('Server Error: ' + respGameData.errorMsg);
+    }
+    return respGameData.parseToGameData();
+  }
 
-  Future<GameData> turnSix();
+  Future<GameData> endTurn() async {
+    String postBody = jsonEncode(<String, String>{
+      "player_name": this.playerName,
+      "game_name": this.gameName,
+    });
+    var response = await postRequest("turn", postBody);
+    var respGameData = RespGameData.fromJson(jsonDecode(response.body));
+    if (respGameData.errorMsg != "") {
+      throw Exception('Server Error: ' + respGameData.errorMsg);
+    }
+    return respGameData.parseToGameData();
+  }
 
-  GameData convertGameData(RpcGameData rpcData);
+  Future<GameData> refreshGame() async {
+    var response = await getRequest("game?" +
+        "player_name=" +
+        this.playerName +
+        "&game_name=" +
+        this.gameName);
+    var respGameData = RespGameData.fromJson(jsonDecode(response.body));
+    if (respGameData.errorMsg != "") {
+      throw Exception('Server Error: ' + respGameData.errorMsg);
+    }
+    return respGameData.parseToGameData();
+  }
 
-  Player convertPlayerData(rpcPlayer);
+  Future<GameData> turnSix() async {
+    String postBody = jsonEncode(<String, String>{
+      "player_name": this.playerName,
+      "game_name": this.gameName,
+    });
+    var response = await postRequest("six", postBody);
+    var respGameData = RespGameData.fromJson(jsonDecode(response.body));
+    if (respGameData.errorMsg != "") {
+      throw Exception('Server Error: ' + respGameData.errorMsg);
+    }
+    return respGameData.parseToGameData();
+  }
 
-  Future<void> getPlayerList(Function updateLobby);
+  Future<void> getPlayerList(Function updateLobby) async {
+    var response = await this.getRequest("playerlist?" +
+        "player_name=" +
+        this.playerName +
+        "&" +
+        "game_name=" +
+        this.gameName);
+    var respGetPlayerList =
+        RespGetPlayerList.fromJson(jsonDecode(response.body));
+    if (respGetPlayerList.errorMsg != "") {
+      throw Exception('Server Error: ' + respGetPlayerList.errorMsg);
+    }
+    updateLobby(respGetPlayerList.playerNames, respGetPlayerList.gameState);
+  }
 
-  Future<void> registerGame(String playerName, Function updateGameName);
+  Future<void> registerPlayer(String playerName, String gameName) async {
+    String postBody = jsonEncode(
+        <String, String>{"player_name": playerName, "game_name": gameName});
+    var response = await postRequest("game", postBody);
+    var respRegPlayer = RespRegisterPlayer.fromJson(jsonDecode(response.body));
+    if (respRegPlayer.errorMsg != "") {
+      throw Exception('Server Error: ' + respRegPlayer.errorMsg);
+    }
+    // this.playerNr = respRegPlayer.playerNr;
+    this.gameNr = respRegPlayer.gameId;
+    this.registered = true;
+  }
 
-  Future<void> registerPlayer(String playerName, String gameName);
-
-  Future<void> startGame();
-
-  Future<StartGameResponse> rpcStartGame(param);
-
-  Future<RpcGameData> rpcTouchDice(param);
-
-  Future<RpcGameData> rpcTouchCup(param);
-
-  Future<RpcGameData> rpcEndTurn(param);
-
-  Future<RpcGameData> rpcRefreshGame(param);
-
-  Future<RpcGameData> rpcTurnSix(param);
-
-  Future<PlayerList> rpcGetPlayerList(param);
-
-  Future<GameID> rpcRegisterGame(param);
-
-  Future<RegistrationResponse> rpcRegisterPlayer(param);
+  Future<void> startGame() async {
+    String postBody = jsonEncode(<String, String>{"game_name": this.gameName});
+    var response = await postRequest("gamestart", postBody);
+    var respStartGame = RespStartGame.fromJson(jsonDecode(response.body));
+    if (respStartGame.errorMsg != "") {
+      throw Exception('Server Error: ' + respStartGame.errorMsg);
+    }
+  }
 }
