@@ -2,12 +2,10 @@
 # pylint: disable=E1101
 
 import logging
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from waitress import serve
 
-from gamelogic.Game import Game
 from interface.if_game_data import GameData
-from gamelogic.Player import Player
 from gamelogic.MyEnums import GameState
 from gamelogic.GameManager import GameManager
 
