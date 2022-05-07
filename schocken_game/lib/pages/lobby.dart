@@ -1,15 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:schocken_game/rpc_lib/restConnector.dart';
 import 'package:schocken_game/shared/sharedEnums.dart';
 
-class LobbyHost extends StatefulWidget {
+class Lobby extends StatefulWidget {
   @override
-  _LobbyHostState createState() => _LobbyHostState();
+  _LobbyState createState() => _LobbyState();
 }
 
-class _LobbyHostState extends State<LobbyHost> {
+class _LobbyState extends State<Lobby> {
   Map data = {};
   RestConnector myGC = RestConnector();
   Timer timer;
@@ -20,7 +19,7 @@ class _LobbyHostState extends State<LobbyHost> {
 
   @override
   void initState() {
-    print("lobbyHost");
+    print("Lobby");
     super.initState();
     // this.myGC.setShowdialog(_showDialog);
     timer = Timer.periodic(Duration(milliseconds: refreshIntervall),

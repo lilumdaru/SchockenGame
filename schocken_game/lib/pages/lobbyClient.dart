@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../rpc_lib/gameConnector.dart';
+import '../rpc_lib/restConnector.dart';
 
 class LobbyClient extends StatefulWidget {
   @override
@@ -9,7 +9,7 @@ class LobbyClient extends StatefulWidget {
 
 class _LobbyClientState extends State<LobbyClient> {
   Map data = {};
-  GameConnector myGC = GameConnector();
+  RestConnector myGC = RestConnector();
   Timer timer;
   List<String> players = [];
   String gameName = "";
@@ -32,28 +32,28 @@ class _LobbyClientState extends State<LobbyClient> {
   }
 
   void getNewPlayerlist() {
-    myGC.getPlayerList(updateLobby);
+    // myGC.getPlayerList(updateLobby);
   }
 
   void updateLobby(List<String> playerNames, String status) {
     if (!mounted) return;
-    if (myGC.gameNr != 0) {
-      setState(() => this.gameStatus = status);
-      setState(() => this.players = playerNames);
-    }
+    // if (myGC.gameNr != 0) {
+    //   setState(() => this.gameStatus = status);
+    //   setState(() => this.players = playerNames);
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
     gameName = data["gameName"].toUpperCase();
-    if (myGC.gameNr == -10) {
-      // try registerPlayer
-      myGC.gameNr = -9; // assume registration failed
-      this.myGC.registerPlayer(data["playerName"], data["gameName"]);
-      this.myGC.gameName = gameName;
-      this.myGC.playerName = data["playerName"];
-    }
+    // if (myGC.gameNr == -10) {
+    //   // try registerPlayer
+    //   myGC.gameNr = -9; // assume registration failed
+    //   this.myGC.registerPlayer(data["playerName"], data["gameName"]);
+    //   this.myGC.gameName = gameName;
+    //   this.myGC.playerName = data["playerName"];
+    // }
     if (this.gameStatus == "STARTING") {
       Future.delayed(Duration.zero, () {
         Navigator.pushReplacementNamed(context, '/game', arguments: {

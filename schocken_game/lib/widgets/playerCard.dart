@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schocken_game/shared/sharedEnums.dart';
 import '../shared/gameData.dart';
-import '../shared/player.dart';
 
 class PlayerCard extends StatefulWidget {
   final int index;

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:schocken_game/shared/sharedEnums.dart';
 import 'package:schocken_game/widgets/playerCard.dart';
-import '../rpc_lib/gameConnector.dart';
+import '../rpc_lib/restConnector.dart';
 import '../shared/gameData.dart';
 import '../shared/player.dart';
 
 class GameManager extends StatefulWidget {
   final Widget child;
   final int event;
-  final GameConnector myGC;
+  final RestConnector myGC;
   final GameData myGameData;
 
   GameManager({@required this.child, this.event, this.myGC, this.myGameData});
@@ -29,44 +29,44 @@ class GameManagerState extends State<GameManager> {
   int event = 0;
   bool firstRun = true;
   GameData myGameData = new GameData();
-  GameConnector myGC;
+  RestConnector myGC;
 
   // add functions here
 
   void diceTouched(int id) async {
     print("diceTouched: " + id.toString());
 
-    GameData newData = await myGC.touchDice(id);
-    updateUi(newData);
+    // GameData newData = await myGC.touchDice(id);
+    // updateUi(newData);
   }
 
   void cupTouched(bool cupState) async {
     print("Cup with " + cupState.toString() + " touched!");
 
-    GameData newData = await myGC.touchCup();
-    updateUi(newData);
+    // GameData newData = await myGC.touchCup();
+    // updateUi(newData);
   }
 
   void endTurn() async {
     print("endTurn!");
-    GameData newData = await myGC.endTurn();
-    updateUi(newData);
+    // GameData newData = await myGC.endTurn();
+    // updateUi(newData);
   }
 
   void refresh() async {
     print("refresh!");
-    GameData newData = await myGC.refreshGame();
-    updateUi(newData);
+    // GameData newData = await myGC.refreshGame();
+    // updateUi(newData);
 
-    if (newData.sendReport) {
-      showReport(newData);
-    }
+    // if (newData.sendReport) {
+    //   showReport(newData);
+    // }
   }
 
   void turnSix() async {
     print("turnSix!");
-    GameData newData = await myGC.turnSix();
-    updateUi(newData);
+    // GameData newData = await myGC.turnSix();
+    // updateUi(newData);
   }
 
   void updateUi(GameData newData) {

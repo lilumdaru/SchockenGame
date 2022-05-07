@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../rpc_lib/gameConnector.dart';
+import '../rpc_lib/restConnector.dart';
 import '../shared/gameData.dart';
 import '../widgets/gameManager.dart';
 import '../widgets/playerList.dart';
@@ -12,7 +12,7 @@ class Game extends StatefulWidget {
 
 class _GameState extends State<Game> {
   Map data = {};
-  GameConnector myGC;
+  RestConnector myGC;
   GameData myGameData;
 
   @override

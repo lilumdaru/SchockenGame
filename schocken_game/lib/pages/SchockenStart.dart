@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:schocken_game/shared/gameController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final getIt = GetIt.instance;
 
 class SchockenStart extends StatefulWidget {
   @override
@@ -8,10 +12,10 @@ class SchockenStart extends StatefulWidget {
 
 class _SchockenStartState extends State<SchockenStart> {
   String playerName = '';
+  String gameName = '';
   var playerNameContr = TextEditingController();
   final formKeyName = GlobalKey<FormState>();
   final formKeyGame = GlobalKey<FormState>();
-  String gameName = '';
 
   @override
   void initState() {
@@ -40,7 +44,7 @@ class _SchockenStartState extends State<SchockenStart> {
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
-      title: Text('Schocken v.0'),
+      title: Text('Schocken v.0.1'),
       centerTitle: true,
     );
     double screenHeightMinusAppBarMinusStatusBar =
@@ -131,12 +135,20 @@ class _SchockenStartState extends State<SchockenStart> {
                           flex: 1,
                           child: Container(),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.lightBlue,
+                            elevation: 3,
+                          ),
                           onPressed: () {
                             _submitJoin();
                           },
-                          child: Text('Spiel beitreten'),
-                          color: Colors.lightBlue,
+                          child: Text(
+                            'Spiel beitreten',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                         Expanded(
                           flex: 3,
@@ -155,12 +167,20 @@ class _SchockenStartState extends State<SchockenStart> {
                           flex: 1,
                           child: Container(),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.lightBlue,
+                            elevation: 3,
+                          ),
                           onPressed: () {
                             _submitHost();
                           },
-                          child: Text('Spiel erstellen'),
-                          color: Colors.lightBlue,
+                          child: Text(
+                            'Spiel erstellen',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -171,23 +191,24 @@ class _SchockenStartState extends State<SchockenStart> {
   void _submitJoin() {
     if (formKeyGame.currentState.validate() &&
         formKeyName.currentState.validate()) {
+      print("click on _submitJoin");
       formKeyGame.currentState.save();
       formKeyName.currentState.save();
       setPlayerName(playerName);
-      Navigator.pushNamed(context, '/lobbyClient', arguments: {
-        'playerName': playerName,
-        'gameName': gameName,
-      });
+
+      // Navigator.pushNamed(context, '/lobby');
     }
   }
 
   void _submitHost() {
     if (formKeyName.currentState.validate()) {
+      print("click on _submitHost");
       formKeyName.currentState.save();
       setPlayerName(playerName);
-      Navigator.pushNamed(context, '/lobbyHost', arguments: {
-        'playerName': playerName,
-      });
+
+      getIt<GameController>().registerGame(this.playerName);
+
+      Navigator.pushNamed(context, '/lobby');
     }
   }
 }

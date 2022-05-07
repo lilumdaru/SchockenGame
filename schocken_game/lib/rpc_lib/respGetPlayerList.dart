@@ -9,8 +9,9 @@ class RespGetPlayerList {
 
   factory RespGetPlayerList.fromJson(Map<String, dynamic> json) {
     return RespGetPlayerList(
-      gameState: json['game_state'],
-      playerNames: json['player_names'],
+      gameState: GameState.values[json['game_state']],
+      // playerNames: json['player_names'],
+      playerNames: (json['player_names'] as List<dynamic>).cast<String>(),
       errorMsg: json['error_msg'],
     );
   }
