@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:schocken_game/shared/functionReturnValues.dart';
 import 'package:schocken_game/shared/gameController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -189,6 +190,8 @@ class _SchockenStartState extends State<SchockenStart> {
   }
 
   void _submitJoin() {
+    getIt<GameController>().isHost = false;
+
     if (formKeyGame.currentState.validate() &&
         formKeyName.currentState.validate()) {
       print("click on _submitJoin");
@@ -196,19 +199,29 @@ class _SchockenStartState extends State<SchockenStart> {
       formKeyName.currentState.save();
       setPlayerName(playerName);
 
-      // Navigator.pushNamed(context, '/lobby');
+      getIt<GameController>()
+          .registerPlayer(this.playerName, this.gameName)
+          .then((fncReturn) => {
+                if (fncReturn == ReturnValue.SUCCESS)
+                  {Navigator.pushNamed(context, '/lobby')}
+              });
     }
   }
 
   void _submitHost() {
+    getIt<GameController>().isHost = true;
+
     if (formKeyName.currentState.validate()) {
       print("click on _submitHost");
       formKeyName.currentState.save();
       setPlayerName(playerName);
 
-      getIt<GameController>().registerGame(this.playerName);
-
-      Navigator.pushNamed(context, '/lobby');
+      getIt<GameController>()
+          .registerGame(this.playerName)
+          .then((fncReturn) => {
+                if (fncReturn == ReturnValue.SUCCESS)
+                  {Navigator.pushNamed(context, '/lobby')}
+              });
     }
   }
 }

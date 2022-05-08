@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:get_it/get_it.dart';
 import 'package:schocken_game/rpc_lib/restConnector.dart';
+import 'package:schocken_game/shared/gameController.dart';
 import 'package:schocken_game/shared/sharedEnums.dart';
+import '../shared/functionReturnValues.dart';
+
+final getIt = GetIt.instance;
 
 class Lobby extends StatefulWidget {
   @override
@@ -9,13 +14,9 @@ class Lobby extends StatefulWidget {
 }
 
 class _LobbyState extends State<Lobby> {
-  Map data = {};
   RestConnector myGC = RestConnector();
   Timer timer;
-  List<String> players = [];
-  String gameName = "";
   int refreshIntervall = 500; // ms
-  GameState gameStatus = GameState.LOBBY;
 
   @override
   void initState() {
@@ -33,26 +34,28 @@ class _LobbyState extends State<Lobby> {
   }
 
   void getNewPlayerlist() {
-    // myGC.getPlayerList(updateLobby);
+    getIt<GameController>().getLobbyList().then((fncReturn) => {
+          if (fncReturn == ReturnValue.SUCCESS) {updateLobby()}
+        });
   }
 
-  void updateLobby(List<String> playerNames, GameState status) {
+  void updateLobby() {
     if (!mounted) return;
-    setState(() => this.players = playerNames);
-    setState(() => this.gameStatus = status);
-  }
 
-  updateGameName(gameName) {
-    if (!mounted) return;
-    setState(() => this.gameName = gameName.toUpperCase());
+    if (getIt<GameController>().state == GameState.STARTING) {
+      Navigator.pushReplacementNamed(context, '/game', arguments: {
+        'GameConnector': this.myGC,
+      });
+      return;
+    }
+
+    setState(() => {});
   }
 
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context).settings.arguments;
-
     AppBar appBar = AppBar(
-      title: Text('Schocken v.0: ' + gameName),
+      title: Text('Schocken v.0: ' + getIt<GameController>().gameName),
       centerTitle: true,
       automaticallyImplyLeading: true,
     );
@@ -73,7 +76,7 @@ class _LobbyState extends State<Lobby> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
               Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Text(gameName,
+                child: Text(getIt<GameController>().gameName,
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
               ),
@@ -99,7 +102,7 @@ class _LobbyState extends State<Lobby> {
               ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: players.length,
+                  itemCount: getIt<GameController>().lobbyList.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
@@ -107,46 +110,59 @@ class _LobbyState extends State<Lobby> {
                       child: Card(
                         child: ListTile(
                           onTap: () {},
-                          title: Text(players[index]),
+                          title: Text(getIt<GameController>().lobbyList[index]),
                         ),
                       ),
                     );
                   })
             ])),
           ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
-          Divider(
-            height: 5.0,
-            color: Colors.grey,
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
-          RaisedButton(
-            onPressed: () {
-              _startGame();
-            },
-            child: Text('Spiel starten'),
-            color: Colors.lightBlue,
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
+          ...getFooter(),
         ],
       ),
     );
   }
 
+  List<Widget> getFooter() {
+    if (getIt<GameController>().isHost) {
+      return [
+        Expanded(
+          flex: 1,
+          child: Container(),
+        ),
+        Divider(
+          height: 5.0,
+          color: Colors.grey,
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(),
+        ),
+        RaisedButton(
+          onPressed: () {
+            _startGame();
+          },
+          child: Text('Spiel starten'),
+          color: Colors.lightBlue,
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(),
+        ),
+      ];
+    } else {
+      return [
+        Expanded(
+          flex: 1,
+          child: Container(),
+        )
+      ];
+    }
+  }
+
   void _startGame() async {
     // await this.myGC.startGame();
-
-    Navigator.pushReplacementNamed(context, '/game',
-        arguments: {'GameConnector': this.myGC});
+    print("send rpc to start game");
   }
 
   void _showDialog(String title, String text, String btnText) {

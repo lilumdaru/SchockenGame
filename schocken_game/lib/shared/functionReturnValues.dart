@@ -1,0 +1,1 @@
+enum ReturnValue { SUCCESS, FAILED }
