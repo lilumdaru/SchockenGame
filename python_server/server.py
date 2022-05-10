@@ -90,7 +90,7 @@ def start_game():
     return answer, 400
 
 
-@app.post("/touch_dice")
+@app.post("/dice")
 def touch_dice():
     answer = {"error_msg": "Error with request"}
     if request.is_json:
@@ -99,13 +99,15 @@ def touch_dice():
         # logger.info("player_name: " + content["player_name"])
         # logger.info("dice_id: " + content["dice_id"])
         game = GM.touch_dice(
-            content["game_name"].upper(), content["player_name"], content["dice_id"]
+            content["game_name"].upper(),
+            content["player_name"],
+            int(content["dice_id"]),
         )
         return GameData(game).get_json(), 200
     return answer, 400
 
 
-@app.post("/touch_cup")
+@app.post("/cup")
 def touch_cup():
     answer = {"error_msg": "Error with request"}
     if request.is_json:
@@ -132,11 +134,14 @@ def end_turn():
 @app.get("/game")
 def refresh_game():
     answer = {"error_msg": "Error with request"}
-    if request.is_json:
-        content = request.get_json()
+    if isinstance(request.args["player_name"], str) and isinstance(
+        request.args["game_name"], str
+    ):
         # logger.info("game_name: " + content["game_name"])
         # logger.info("player_name: " + content["player_name"])
-        game = GM.refresh_game(content["game_name"].upper(), content["player_name"])
+        game = GM.refresh_game(
+            request.args["game_name"].upper(), request.args["player_name"]
+        )
         return GameData(game).get_json(), 200
     return answer, 400
 
