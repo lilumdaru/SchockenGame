@@ -1,4 +1,13 @@
-enum GameState { LOBBY, STARTING, RUNNING, ENDED, TIMEOUT, ERROR }
+enum GameState {
+  LOBBY,
+  STARTING,
+  RUNNING,
+  ENDED,
+  TIMEOUT,
+  ERROR,
+  UNINITIALIZED,
+  SEND_REPORT
+}
 
 enum PlayerState {
   ACTIVE,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:schocken_game/widgets/gameManager.dart';
+import 'package:schocken_game/main.dart';
+import 'package:schocken_game/shared/gameController.dart';
+import 'package:schocken_game/shared/gameData.dart';
 
 class RoundCounter extends StatefulWidget {
   final double width;
@@ -13,15 +15,14 @@ class RoundCounter extends StatefulWidget {
 class _RoundCounter extends State<RoundCounter> {
   @override
   Widget build(BuildContext context) {
-    final myInheritedWidget = GameManager.of(context);
+    GameData gameData = getIt<GameController>().gameData;
 
-    if (myInheritedWidget.myGameData.activeRoll == null ||
-        myInheritedWidget.myGameData.maxRolls == null) {
+    if (gameData.activeRoll == null || gameData.maxRolls == null) {
       return Container();
     }
 
-    int x = myInheritedWidget.myGameData.activeRoll;
-    int y = myInheritedWidget.myGameData.maxRolls;
+    int x = gameData.activeRoll;
+    int y = gameData.maxRolls;
     if (x == 0) {
       x = 1;
     }

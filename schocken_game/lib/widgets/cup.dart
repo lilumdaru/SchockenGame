@@ -1,4 +1,6 @@
-import 'package:schocken_game/widgets/gameManager.dart';
+import 'package:schocken_game/main.dart';
+import 'package:schocken_game/shared/gameController.dart';
+import 'package:schocken_game/shared/gameData.dart';
 import 'package:flutter/material.dart';
 
 class Cup extends StatefulWidget {
@@ -14,14 +16,14 @@ class Cup extends StatefulWidget {
 class _Cup extends State<Cup> {
   @override
   Widget build(BuildContext context) {
-    final myInheritedWidget = GameManager.of(context);
+    GameData gameData = getIt<GameController>().gameData;
 
     // return empty Container if null
-    if (myInheritedWidget.myGameData.activeCupUp == null) {
+    if (gameData.activeCupUp == null) {
       return Container();
     }
 
-    bool cupUp = myInheritedWidget.myGameData.activeCupUp;
+    bool cupUp = gameData.activeCupUp;
     Image myCup;
     if (cupUp) {
       myCup = Image.asset('assets/cup_up.png');
@@ -31,7 +33,7 @@ class _Cup extends State<Cup> {
 
     return Container(
       child: GestureDetector(
-        onTap: () => myInheritedWidget.cupTouched(cupUp),
+        onTap: () => getIt<GameController>().touchCup(),
         child: myCup,
       ),
       width: widget.width,

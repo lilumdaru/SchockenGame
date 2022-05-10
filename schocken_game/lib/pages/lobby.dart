@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:get_it/get_it.dart';
-import 'package:schocken_game/rpc_lib/restConnector.dart';
 import 'package:schocken_game/shared/gameController.dart';
 import 'package:schocken_game/shared/sharedEnums.dart';
-import '../shared/functionReturnValues.dart';
-
-final getIt = GetIt.instance;
+import '../main.dart';
 
 class Lobby extends StatefulWidget {
   @override
@@ -14,42 +9,31 @@ class Lobby extends StatefulWidget {
 }
 
 class _LobbyState extends State<Lobby> {
-  RestConnector myGC = RestConnector();
-  Timer timer;
-  int refreshIntervall = 500; // ms
-
   @override
   void initState() {
-    print("Lobby");
     super.initState();
-    // this.myGC.setShowdialog(_showDialog);
-    timer = Timer.periodic(Duration(milliseconds: refreshIntervall),
-        (Timer t) => getNewPlayerlist());
+    getIt<GameController>().addListener(updateLobby);
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    getIt<GameController>().removeListener(updateLobby);
     super.dispose();
-  }
-
-  void getNewPlayerlist() {
-    getIt<GameController>().getLobbyList().then((fncReturn) => {
-          if (fncReturn == ReturnValue.SUCCESS) {updateLobby()}
-        });
   }
 
   void updateLobby() {
     if (!mounted) return;
 
-    if (getIt<GameController>().state == GameState.STARTING) {
-      Navigator.pushReplacementNamed(context, '/game', arguments: {
-        'GameConnector': this.myGC,
-      });
-      return;
+    if (getIt<GameController>().ErrorMsg != "") {
+      this._showDialog("Error", getIt<GameController>().ErrorMsg, "OK");
+      getIt<GameController>().ErrorMsg = ""; // reset error
     }
 
-    setState(() => {});
+    if (getIt<GameController>().state == GameState.STARTING) {
+      Navigator.pushReplacementNamed(context, '/game');
+    } else {
+      setState(() => {});
+    }
   }
 
   @override
@@ -64,6 +48,8 @@ class _LobbyState extends State<Lobby> {
             appBar.preferredSize.height -
             MediaQuery.of(context).padding.top;
     double playerHeight = screenHeightMinusAppBarMinusStatusBar - 170;
+
+    List<String> players = getIt<GameController>().lobbyList;
 
     return Scaffold(
       appBar: appBar,
@@ -102,7 +88,7 @@ class _LobbyState extends State<Lobby> {
               ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: getIt<GameController>().lobbyList.length,
+                  itemCount: players.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
@@ -110,7 +96,7 @@ class _LobbyState extends State<Lobby> {
                       child: Card(
                         child: ListTile(
                           onTap: () {},
-                          title: Text(getIt<GameController>().lobbyList[index]),
+                          title: Text(players[index]),
                         ),
                       ),
                     );
@@ -138,12 +124,21 @@ class _LobbyState extends State<Lobby> {
           flex: 1,
           child: Container(),
         ),
-        RaisedButton(
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Colors.lightBlue,
+              elevation: 3,
+              padding:
+                  const EdgeInsets.symmetric(vertical: 2.0, horizontal: 50.0)),
           onPressed: () {
-            _startGame();
+            getIt<GameController>().startGame();
           },
-          child: Text('Spiel starten'),
-          color: Colors.lightBlue,
+          child: Text(
+            'Spiel starten',
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
         ),
         Expanded(
           flex: 1,
@@ -160,11 +155,6 @@ class _LobbyState extends State<Lobby> {
     }
   }
 
-  void _startGame() async {
-    // await this.myGC.startGame();
-    print("send rpc to start game");
-  }
-
   void _showDialog(String title, String text, String btnText) {
     Navigator.popUntil(context, ModalRoute.withName('/'));
     // flutter defined function
@@ -177,11 +167,20 @@ class _LobbyState extends State<Lobby> {
           content: new Text(text),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(btnText),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.lightBlue,
+                elevation: 3,
+              ),
               onPressed: () {
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               },
+              child: Text(
+                btnText,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
             ),
           ],
         );

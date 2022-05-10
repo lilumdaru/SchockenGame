@@ -18,9 +18,9 @@ class RespPlayer {
   factory RespPlayer.fromJson(Map<String, dynamic> json) {
     return RespPlayer(
       playerName: json['player_name'],
-      playerState: json['player_state'],
+      playerState: PlayerState.values[json['player_state']],
       discs: json['discs'],
-      dices: json['dices'],
+      dices: List<int>.from(json['dices']).map((i) => i).toList(),
       lostHalf: json['lost_half'],
     );
   }

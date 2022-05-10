@@ -4,7 +4,7 @@ import 'package:schocken_game/shared/player.dart';
 import 'package:schocken_game/shared/sharedEnums.dart';
 
 class RespGameData {
-  final gameName;
+  final String gameName;
   final List<Player> players;
   final GameState gameState;
   final int activeRoll;
@@ -12,7 +12,7 @@ class RespGameData {
   final List<String> messages;
   final bool buttonTurn6;
   final bool generateReport;
-  final int disksOnStack;
+  final int discsOnStack;
   final GameRound gameRound;
   final String errorMsg;
 
@@ -25,7 +25,7 @@ class RespGameData {
       this.messages,
       this.buttonTurn6,
       this.generateReport,
-      this.disksOnStack,
+      this.discsOnStack,
       this.gameRound,
       this.errorMsg});
 
@@ -36,14 +36,14 @@ class RespGameData {
       players: List<dynamic>.from(json['players'])
           .map((i) => RespPlayer.fromJson(i).parseToPlayer())
           .toList(),
-      gameState: json['game_state'],
+      gameState: GameState.values[json['game_state']],
       activeRoll: json['active_roll'],
       maxRolls: json['max_rolls'],
-      messages: json['messages'],
+      messages: List<String>.from(json['messages']).map((i) => i).toList(),
       buttonTurn6: json['button_turn6'],
       generateReport: json['generate_report'],
-      disksOnStack: json['disks_on_stack'],
-      gameRound: json['game_round'],
+      discsOnStack: json['discs_on_stack'],
+      gameRound: GameRound.values[json['game_round']],
       errorMsg: json['error_msg'],
     );
   }
@@ -60,8 +60,30 @@ class RespGameData {
     gameData.messages = this.messages;
     gameData.turnSixButton = this.buttonTurn6;
     gameData.sendReport = this.generateReport;
-    gameData.discsOnStack = this.disksOnStack;
+    gameData.discsOnStack = this.discsOnStack;
     gameData.gameRound = this.gameRound;
+
+    // GUI Bugfix: fill active Player:
+    for (Player player in gameData.players) {
+      if (player.playerState == PlayerState.ACTIVE) {
+        gameData.activePlayer = player;
+        break;
+      }
+    }
+
+    // GUI Bugfix: set Active Player Cup Status:
+    bool cupUp = true;
+    for (int i = 0; i < gameData.activePlayer.dice.length; i++) {
+      if (gameData.activePlayer.dice[i] < 1 ||
+          gameData.activePlayer.dice[i] > 6) {
+        cupUp = false;
+      }
+    }
+    if (gameData.activePlayer.dice.length < 3) {
+      cupUp = false;
+    }
+    gameData.activeCupUp = cupUp;
+
     return gameData;
   }
 }

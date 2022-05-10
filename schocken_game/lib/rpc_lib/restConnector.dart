@@ -5,8 +5,6 @@ import 'package:schocken_game/rpc_lib/respGetPlayerList.dart';
 import 'package:schocken_game/rpc_lib/respRegisterGame.dart';
 import 'package:schocken_game/rpc_lib/respRegisterPlayer.dart';
 import 'package:schocken_game/rpc_lib/respStartGame.dart';
-
-import '../shared/gameData.dart';
 import 'package:http/http.dart' as http;
 
 class RestConnector {
@@ -52,7 +50,7 @@ class RestConnector {
     return respRegGame;
   }
 
-  Future<GameData> touchDice(
+  Future<RespGameData> touchDice(
       int diceId, String playerName, String gameName) async {
     String postBody = jsonEncode(<String, String>{
       "player_name": playerName,
@@ -64,10 +62,10 @@ class RestConnector {
     // if (respGameData.errorMsg != "") {
     //   throw Exception('Server Error: ' + respGameData.errorMsg);
     // }
-    return respGameData.parseToGameData();
+    return respGameData;
   }
 
-  Future<GameData> touchCup(String playerName, String gameName) async {
+  Future<RespGameData> touchCup(String playerName, String gameName) async {
     String postBody = jsonEncode(<String, String>{
       "player_name": playerName,
       "game_name": gameName,
@@ -77,33 +75,35 @@ class RestConnector {
     // if (respGameData.errorMsg != "") {
     //   throw Exception('Server Error: ' + respGameData.errorMsg);
     // }
-    return respGameData.parseToGameData();
+    return respGameData;
   }
 
-  Future<GameData> endTurn(String playerName, String gameName) async {
+  Future<RespGameData> endTurn(String playerName, String gameName) async {
     String postBody = jsonEncode(<String, String>{
       "player_name": playerName,
       "game_name": gameName,
     });
     var response = await postRequest("turn", postBody);
-    var respGameData = RespGameData.fromJson(jsonDecode(response.body));
+    RespGameData respGameData =
+        RespGameData.fromJson(jsonDecode(response.body));
     // if (respGameData.errorMsg != "") {
     //   throw Exception('Server Error: ' + respGameData.errorMsg);
     // }
-    return respGameData.parseToGameData();
+    return respGameData;
   }
 
-  Future<GameData> refreshGame(String playerName, String gameName) async {
+  Future<RespGameData> refreshGame(String playerName, String gameName) async {
     var response = await getRequest(
         "game?" + "player_name=" + playerName + "&game_name=" + gameName);
-    var respGameData = RespGameData.fromJson(jsonDecode(response.body));
+    RespGameData respGameData =
+        RespGameData.fromJson(jsonDecode(response.body));
     // if (respGameData.errorMsg != "") {
     //   throw Exception('Server Error: ' + respGameData.errorMsg);
     // }
-    return respGameData.parseToGameData();
+    return respGameData;
   }
 
-  Future<GameData> turnSix(String playerName, String gameName) async {
+  Future<RespGameData> turnSix(String playerName, String gameName) async {
     String postBody = jsonEncode(<String, String>{
       "player_name": playerName,
       "game_name": gameName,
@@ -113,7 +113,7 @@ class RestConnector {
     // if (respGameData.errorMsg != "") {
     //   throw Exception('Server Error: ' + respGameData.errorMsg);
     // }
-    return respGameData.parseToGameData();
+    return respGameData;
   }
 
   Future<RespGetPlayerList> getPlayerList(
@@ -136,7 +136,7 @@ class RestConnector {
       String playerName, String gameName) async {
     String postBody = jsonEncode(
         <String, String>{"player_name": playerName, "game_name": gameName});
-    var response = await postRequest("game", postBody);
+    var response = await postRequest("player", postBody);
     var respRegPlayer = RespRegisterPlayer.fromJson(jsonDecode(response.body));
     // if (respRegPlayer.errorMsg != "") {
     //   throw Exception('Server Error: ' + respRegPlayer.errorMsg);

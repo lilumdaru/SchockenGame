@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:schocken_game/shared/functionReturnValues.dart';
 import 'package:schocken_game/shared/gameController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-final getIt = GetIt.instance;
+import '../main.dart';
 
 class SchockenStart extends StatefulWidget {
   @override
@@ -194,7 +192,6 @@ class _SchockenStartState extends State<SchockenStart> {
 
     if (formKeyGame.currentState.validate() &&
         formKeyName.currentState.validate()) {
-      print("click on _submitJoin");
       formKeyGame.currentState.save();
       formKeyName.currentState.save();
       setPlayerName(playerName);
@@ -212,7 +209,6 @@ class _SchockenStartState extends State<SchockenStart> {
     getIt<GameController>().isHost = true;
 
     if (formKeyName.currentState.validate()) {
-      print("click on _submitHost");
       formKeyName.currentState.save();
       setPlayerName(playerName);
 

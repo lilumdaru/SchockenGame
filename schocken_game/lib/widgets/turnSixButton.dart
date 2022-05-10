@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:schocken_game/widgets/gameManager.dart';
+import 'package:schocken_game/main.dart';
+import 'package:schocken_game/shared/gameController.dart';
+import 'package:schocken_game/shared/gameData.dart';
 
 class TurnSixButton extends StatefulWidget {
   final double width;
@@ -13,9 +15,9 @@ class TurnSixButton extends StatefulWidget {
 class _TurnSixButton extends State<TurnSixButton> {
   @override
   Widget build(BuildContext context) {
-    final myInheritedWidget = GameManager.of(context);
+    GameData gameData = getIt<GameController>().gameData;
 
-    if (myInheritedWidget.myGameData.turnSixButton == false) {
+    if (gameData.turnSixButton == false) {
       return Container();
     }
 
@@ -23,7 +25,7 @@ class _TurnSixButton extends State<TurnSixButton> {
 
     return Container(
       child: GestureDetector(
-        onTap: () => myInheritedWidget.turnSix(),
+        onTap: () => getIt<GameController>().turnSix(),
         child: turnSixImg,
       ),
       width: widget.width,

@@ -5,7 +5,7 @@ class GameData {
   String gameName = "";
   List<Player> players = [];
   GameState state;
-  Player activePlayer;
+  Player activePlayer = Player("pl", PlayerState.ACTIVE, 3, [0, 0, 0], true);
   int activeRoll;
   int maxRolls;
   bool activeCupUp;
