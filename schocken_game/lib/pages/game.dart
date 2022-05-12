@@ -161,7 +161,10 @@ class _GameState extends State<Game> {
         // return object of type Dialog
         return AlertDialog(
           title: new Text("Ergebnisse"),
-          content: contentData,
+          content: Container(
+            width: double.maxFinite,
+            child: contentData,
+          ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             ElevatedButton(
