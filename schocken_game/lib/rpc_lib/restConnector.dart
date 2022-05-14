@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/services.dart';
 import 'package:schocken_game/rpc_lib/respGameData.dart';
 import 'package:schocken_game/rpc_lib/respGetPlayerList.dart';
 import 'package:schocken_game/rpc_lib/respRegisterGame.dart';

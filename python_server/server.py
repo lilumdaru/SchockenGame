@@ -4,18 +4,27 @@
 import logging
 from flask import Flask, request
 from waitress import serve
-
 from interface.if_game_data import GameData
 from gamelogic.MyEnums import GameState
 from gamelogic.GameManager import GameManager
+from flask_cors import CORS, cross_origin
+
 
 app = Flask(__name__)
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 GM = GameManager()
+
+cors = CORS(app)
+app.config["CORS_HEADERS"] = "Content-Type"
+
+
+@app.route("/")
+@cross_origin()
+def helloWorld():
+    return "Hello, cross-origin-world!"
 
 
 @app.post("/game")
