@@ -2,6 +2,7 @@
 # pylint: disable=E1101
 
 import logging
+import os
 from flask import Flask, request
 from waitress import serve
 from interface.if_game_data import GameData
@@ -10,7 +11,7 @@ from gamelogic.GameManager import GameManager
 from flask_cors import CORS, cross_origin
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=os.path.abspath("web"))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,8 +24,8 @@ app.config["CORS_HEADERS"] = "Content-Type"
 
 @app.route("/")
 @cross_origin()
-def helloWorld():
-    return "Hello, cross-origin-world!"
+def root():
+    return app.send_static_file("index.html")
 
 
 @app.post("/game")
@@ -168,4 +169,4 @@ def turn_sixer():
 
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=8080)
+    serve(app, host="0.0.0.0", port=80)
