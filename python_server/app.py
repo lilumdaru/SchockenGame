@@ -4,11 +4,12 @@
 import logging
 import os
 from flask import Flask, request
+
 from waitress import serve
+from flask_cors import CORS, cross_origin
 from interface.if_game_data import GameData
 from gamelogic.MyEnums import GameState
 from gamelogic.GameManager import GameManager
-from flask_cors import CORS, cross_origin
 
 
 app = Flask(__name__, static_folder=os.path.abspath("web"))
@@ -28,18 +29,23 @@ def root():
     return app.send_static_file("index.html")
 
 
+@app.route("/web/")
+def get_app():
+    return app.send_static_file("index.html")
+
+
 @app.post("/game")
 def register_game():
     answer = {"game_name": "", "game_id": 0, "error_msg": "Error with request"}
     if request.is_json:
         content = request.get_json()
-        logger.info("registerGame by: " + content["player_name"])
+        # logger.info("registerGame by: " + content["player_name"])
 
         game = GM.register_game()
         answer["game_id"] = game.game_id
         answer["game_name"] = game.game_name
         answer["error_msg"] = game.error_msg
-        logger.info("GameData.game_name: " + game.game_name)
+        # logger.info("GameData.game_name: " + game.game_name)
 
         return answer, 200
     return answer, 400
@@ -52,12 +58,12 @@ def register_player():
     if request.is_json:
 
         content = request.get_json()
-        logger.info(
-            "register Player: "
-            + content["player_name"]
-            + " for Game: "
-            + content["game_name"]
-        )
+        # logger.info(
+        #     "register Player: "
+        #     + content["player_name"]
+        #     + " for Game: "
+        #     + content["game_name"]
+        # )
         game = GM.register_player(content["game_name"].upper(), content["player_name"])
         answer["game_id"] = game.game_id
         answer["error_msg"] = game.error_msg
@@ -169,4 +175,4 @@ def turn_sixer():
 
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=80)
+    serve(app)
