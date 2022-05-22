@@ -43,7 +43,7 @@ class _SchockenStartState extends State<SchockenStart> {
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
-      title: Text('Schocken v.0.1'),
+      title: Text('Schocken'),
       centerTitle: true,
     );
     double screenHeightMinusAppBarMinusStatusBar =
@@ -201,6 +201,11 @@ class _SchockenStartState extends State<SchockenStart> {
           .then((fncReturn) => {
                 if (fncReturn == ReturnValue.SUCCESS)
                   {Navigator.pushNamed(context, '/lobby')}
+                else if (getIt<GameController>().ErrorMsg != "")
+                  {
+                    this._showDialog(
+                        "Fehler", getIt<GameController>().ErrorMsg, "OK")
+                  }
               });
     }
   }
@@ -217,7 +222,46 @@ class _SchockenStartState extends State<SchockenStart> {
           .then((fncReturn) => {
                 if (fncReturn == ReturnValue.SUCCESS)
                   {Navigator.pushNamed(context, '/lobby')}
+                else if (getIt<GameController>().ErrorMsg != "")
+                  {
+                    this._showDialog(
+                        "Fehler", getIt<GameController>().ErrorMsg, "OK")
+                  }
               });
     }
+  }
+
+  void _showDialog(String title, String text, String btnText) {
+    getIt<GameController>().ErrorMsg = "";
+    Navigator.popUntil(context, ModalRoute.withName('/'));
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(text),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.lightBlue,
+                elevation: 3,
+              ),
+              onPressed: () {
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+              },
+              child: Text(
+                btnText,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

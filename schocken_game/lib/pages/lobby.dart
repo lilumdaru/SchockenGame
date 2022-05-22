@@ -39,7 +39,7 @@ class _LobbyState extends State<Lobby> {
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
-      title: Text('Schocken v.0: ' + getIt<GameController>().gameName),
+      title: Text('Schocken: ' + getIt<GameController>().gameName),
       centerTitle: true,
       automaticallyImplyLeading: true,
     );

@@ -49,7 +49,7 @@ class _GameState extends State<Game> {
     final width = size.width;
 
     AppBar appBar = AppBar(
-      title: Text('Schocken v.0'),
+      title: Text('Schocken'),
       centerTitle: true,
       automaticallyImplyLeading: true,
     );
