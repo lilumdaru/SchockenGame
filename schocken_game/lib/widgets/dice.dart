@@ -1,4 +1,6 @@
-import 'package:schocken_game/widgets/gameManager.dart';
+import 'package:schocken_game/main.dart';
+import 'package:schocken_game/shared/gameController.dart';
+import 'package:schocken_game/shared/gameData.dart';
 import 'package:flutter/material.dart';
 
 class Dice extends StatefulWidget {
@@ -14,15 +16,14 @@ class Dice extends StatefulWidget {
 class _Dice extends State<Dice> {
   @override
   Widget build(BuildContext context) {
-    final myInheritedWidget = GameManager.of(context);
+    GameData gameData = getIt<GameController>().gameData;
 
     // If index is out of array range: Break from function
-    if (myInheritedWidget.myGameData.activePlayer.dice.length < widget.index) {
+    if (gameData.activePlayer.dice.length < widget.index) {
       return Container();
     }
 
-    int diceValue =
-        myInheritedWidget.myGameData.activePlayer.dice[widget.index - 1];
+    int diceValue = gameData.activePlayer.dice[widget.index - 1];
 
     if (diceValue == 0) {
       //  0 is a place holder for a touched dice
@@ -31,7 +32,7 @@ class _Dice extends State<Dice> {
 
     return Container(
       child: GestureDetector(
-        onTap: () => myInheritedWidget.diceTouched(widget.index - 1),
+        onTap: () => getIt<GameController>().touchDice(widget.index - 1),
         child: Image.asset('assets/' + diceValue.toString() + '.png'),
       ),
       width: widget.width,

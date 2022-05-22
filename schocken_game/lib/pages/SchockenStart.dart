@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:schocken_game/shared/functionReturnValues.dart';
+import 'package:schocken_game/shared/gameController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../main.dart';
 
 class SchockenStart extends StatefulWidget {
   @override
@@ -8,10 +11,10 @@ class SchockenStart extends StatefulWidget {
 
 class _SchockenStartState extends State<SchockenStart> {
   String playerName = '';
+  String gameName = '';
   var playerNameContr = TextEditingController();
   final formKeyName = GlobalKey<FormState>();
   final formKeyGame = GlobalKey<FormState>();
-  String gameName = '';
 
   @override
   void initState() {
@@ -40,7 +43,7 @@ class _SchockenStartState extends State<SchockenStart> {
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
-      title: Text('Schocken v.0'),
+      title: Text('Schocken'),
       centerTitle: true,
     );
     double screenHeightMinusAppBarMinusStatusBar =
@@ -131,12 +134,20 @@ class _SchockenStartState extends State<SchockenStart> {
                           flex: 1,
                           child: Container(),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.lightBlue,
+                            elevation: 3,
+                          ),
                           onPressed: () {
                             _submitJoin();
                           },
-                          child: Text('Spiel beitreten'),
-                          color: Colors.lightBlue,
+                          child: Text(
+                            'Spiel beitreten',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                         Expanded(
                           flex: 3,
@@ -155,12 +166,20 @@ class _SchockenStartState extends State<SchockenStart> {
                           flex: 1,
                           child: Container(),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.lightBlue,
+                            elevation: 3,
+                          ),
                           onPressed: () {
                             _submitHost();
                           },
-                          child: Text('Spiel erstellen'),
-                          color: Colors.lightBlue,
+                          child: Text(
+                            'Spiel erstellen',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -169,25 +188,80 @@ class _SchockenStartState extends State<SchockenStart> {
   }
 
   void _submitJoin() {
+    getIt<GameController>().isHost = false;
+
     if (formKeyGame.currentState.validate() &&
         formKeyName.currentState.validate()) {
       formKeyGame.currentState.save();
       formKeyName.currentState.save();
       setPlayerName(playerName);
-      Navigator.pushNamed(context, '/lobbyClient', arguments: {
-        'playerName': playerName,
-        'gameName': gameName,
-      });
+
+      getIt<GameController>()
+          .registerPlayer(this.playerName, this.gameName)
+          .then((fncReturn) => {
+                if (fncReturn == ReturnValue.SUCCESS)
+                  {Navigator.pushNamed(context, '/lobby')}
+                else if (getIt<GameController>().ErrorMsg != "")
+                  {
+                    this._showDialog(
+                        "Fehler", getIt<GameController>().ErrorMsg, "OK")
+                  }
+              });
     }
   }
 
   void _submitHost() {
+    getIt<GameController>().isHost = true;
+
     if (formKeyName.currentState.validate()) {
       formKeyName.currentState.save();
       setPlayerName(playerName);
-      Navigator.pushNamed(context, '/lobbyHost', arguments: {
-        'playerName': playerName,
-      });
+
+      getIt<GameController>()
+          .registerGame(this.playerName)
+          .then((fncReturn) => {
+                if (fncReturn == ReturnValue.SUCCESS)
+                  {Navigator.pushNamed(context, '/lobby')}
+                else if (getIt<GameController>().ErrorMsg != "")
+                  {
+                    this._showDialog(
+                        "Fehler", getIt<GameController>().ErrorMsg, "OK")
+                  }
+              });
     }
+  }
+
+  void _showDialog(String title, String text, String btnText) {
+    getIt<GameController>().ErrorMsg = "";
+    Navigator.popUntil(context, ModalRoute.withName('/'));
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(text),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.lightBlue,
+                elevation: 3,
+              ),
+              onPressed: () {
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+              },
+              child: Text(
+                btnText,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

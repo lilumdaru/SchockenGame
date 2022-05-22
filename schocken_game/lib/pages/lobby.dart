@@ -1,63 +1,45 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:schocken_game/rpc_lib/gameConnector.dart';
+import 'package:schocken_game/shared/gameController.dart';
+import 'package:schocken_game/shared/sharedEnums.dart';
+import '../main.dart';
 
-class LobbyHost extends StatefulWidget {
+class Lobby extends StatefulWidget {
   @override
-  _LobbyHostState createState() => _LobbyHostState();
+  _LobbyState createState() => _LobbyState();
 }
 
-class _LobbyHostState extends State<LobbyHost> {
-  Map data = {};
-  GameConnector myGC;
-  Timer timer;
-  List<String> players = [];
-  String gameName = "";
-  int refreshIntervall = 500; // ms
-  String gameStatus = "";
-
+class _LobbyState extends State<Lobby> {
   @override
   void initState() {
     super.initState();
-    this.myGC = GameConnector.instance;
-    this.myGC.setShowdialog(_showDialog);
-    timer = Timer.periodic(Duration(milliseconds: refreshIntervall),
-        (Timer t) => getNewPlayerlist());
+    getIt<GameController>().addListener(updateLobby);
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    getIt<GameController>().removeListener(updateLobby);
     super.dispose();
   }
 
-  void getNewPlayerlist() {
-    myGC.getPlayerList(updateLobby);
-  }
-
-  void updateLobby(List<String> playerNames, String status) {
+  void updateLobby() {
     if (!mounted) return;
-    setState(() => this.players = playerNames);
-    setState(() => this.gameStatus = status);
-  }
 
-  updateGameName(gameName) {
-    if (!mounted) return;
-    setState(() => this.gameName = gameName.toUpperCase());
+    if (getIt<GameController>().ErrorMsg != "") {
+      this._showDialog("Error", getIt<GameController>().ErrorMsg, "OK");
+      getIt<GameController>().ErrorMsg = ""; // reset error
+    }
+
+    if (getIt<GameController>().state == GameState.STARTING) {
+      Navigator.pushReplacementNamed(context, '/game');
+    } else {
+      setState(() => {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context).settings.arguments;
-    if (myGC.gameNr == -10) {
-      myGC.gameNr = -9;
-      this.myGC.registerGame(data["playerName"], updateGameName);
-      this.myGC.playerName = data["playerName"];
-    }
-
     AppBar appBar = AppBar(
-      title: Text('Schocken v.0: ' + gameName),
+      title: Text('Schocken: ' + getIt<GameController>().gameName),
       centerTitle: true,
       automaticallyImplyLeading: true,
     );
@@ -66,6 +48,8 @@ class _LobbyHostState extends State<LobbyHost> {
             appBar.preferredSize.height -
             MediaQuery.of(context).padding.top;
     double playerHeight = screenHeightMinusAppBarMinusStatusBar - 170;
+
+    List<String> players = getIt<GameController>().lobbyList;
 
     return Scaffold(
       appBar: appBar,
@@ -78,7 +62,7 @@ class _LobbyHostState extends State<LobbyHost> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
               Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Text(gameName,
+                child: Text(getIt<GameController>().gameName,
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
               ),
@@ -119,39 +103,56 @@ class _LobbyHostState extends State<LobbyHost> {
                   })
             ])),
           ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
-          Divider(
-            height: 5.0,
-            color: Colors.grey,
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
-          RaisedButton(
-            onPressed: () {
-              _startGame();
-            },
-            child: Text('Spiel starten'),
-            color: Colors.lightBlue,
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
+          ...getFooter(),
         ],
       ),
     );
   }
 
-  void _startGame() async {
-    await this.myGC.startGame();
-
-    Navigator.pushReplacementNamed(context, '/game',
-        arguments: {'GameConnector': this.myGC});
+  List<Widget> getFooter() {
+    if (getIt<GameController>().isHost) {
+      return [
+        Expanded(
+          flex: 1,
+          child: Container(),
+        ),
+        Divider(
+          height: 5.0,
+          color: Colors.grey,
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Colors.lightBlue,
+              elevation: 3,
+              padding:
+                  const EdgeInsets.symmetric(vertical: 2.0, horizontal: 50.0)),
+          onPressed: () {
+            getIt<GameController>().startGame();
+          },
+          child: Text(
+            'Spiel starten',
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(),
+        ),
+      ];
+    } else {
+      return [
+        Expanded(
+          flex: 1,
+          child: Container(),
+        )
+      ];
+    }
   }
 
   void _showDialog(String title, String text, String btnText) {
@@ -166,11 +167,20 @@ class _LobbyHostState extends State<LobbyHost> {
           content: new Text(text),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(btnText),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.lightBlue,
+                elevation: 3,
+              ),
               onPressed: () {
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               },
+              child: Text(
+                btnText,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
             ),
           ],
         );

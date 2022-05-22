@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:schocken_game/widgets/gameManager.dart';
+import 'package:schocken_game/main.dart';
+import 'package:schocken_game/shared/gameController.dart';
+import 'package:schocken_game/shared/gameData.dart';
 
 class DiscStack extends StatefulWidget {
   final double width;
@@ -13,13 +15,13 @@ class DiscStack extends StatefulWidget {
 class _DiscStack extends State<DiscStack> {
   @override
   Widget build(BuildContext context) {
-    final myInheritedWidget = GameManager.of(context);
+    GameData gameData = getIt<GameController>().gameData;
 
-    if (myInheritedWidget.myGameData.discsOnStack == null) {
+    if (gameData.discsOnStack == null) {
       return Container();
     }
 
-    int discsOnStack = myInheritedWidget.myGameData.discsOnStack;
+    int discsOnStack = gameData.discsOnStack;
 
     return Container(
       decoration: new BoxDecoration(

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class PlayerState(Enum):
+class PlayerState(IntEnum):
     ACTIVE = 0
     PASSIVE = 1
     SPEC = 2
@@ -17,7 +17,7 @@ class PlayerState(Enum):
         return self.value != other.value
 
 
-class GameState(Enum):
+class GameState(IntEnum):
     LOBBY = 0
     STARTING = 1
     RUNNING = 2
@@ -34,8 +34,8 @@ class GameState(Enum):
         return self.value != other.value
 
 
-class Round(Enum):
-    ROUND1_FH = 0 # FH = First Half
+class Round(IntEnum):
+    ROUND1_FH = 0  # FH = First Half
     ROUND1_BACK = 1
     ROUND2_FH = 2
     ROUND2_BACK = 3

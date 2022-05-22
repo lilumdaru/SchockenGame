@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:schocken_game/shared/sharedEnums.dart';
 import '../shared/gameData.dart';
-import '../shared/player.dart';
 
 class PlayerCard extends StatefulWidget {
   final int index;
@@ -112,7 +112,7 @@ class _PlayerCard extends State<PlayerCard> {
             ],
           ),
         ),
-        color: myGameData.players[index].playerState == playerStatus.ACTIVE
+        color: myGameData.players[index].playerState == PlayerState.ACTIVE
             ? Colors.white
             : Colors.grey[300],
       ),

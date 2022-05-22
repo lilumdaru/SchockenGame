@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:schocken_game/shared/gameController.dart';
 import 'package:schocken_game/shared/gameData.dart';
+import 'package:schocken_game/shared/sharedEnums.dart';
+import 'package:schocken_game/widgets/cup.dart';
+import 'package:schocken_game/widgets/dice.dart';
+import 'package:schocken_game/widgets/discStack.dart';
+import 'package:schocken_game/widgets/roundCounter.dart';
 import 'package:schocken_game/widgets/turnSixButton.dart';
-import '../widgets/dice.dart';
-import '../widgets/cup.dart';
-import '../widgets/roundCounter.dart';
-import '../widgets/gameManager.dart';
-import 'discStack.dart';
+import '../main.dart';
 
 class GameZone extends StatefulWidget {
   const GameZone({
@@ -25,10 +26,10 @@ class GameZone extends StatefulWidget {
 class _GameZoneState extends State<GameZone> {
   @override
   Widget build(BuildContext context) {
-    final myInheritedWidget = GameManager.of(context);
+    GameData gameData = getIt<GameController>().gameData;
     Widget gameRound = Container();
 
-    switch (myInheritedWidget.myGameData.gameRound) {
+    switch (gameData.gameRound) {
       case GameRound.ROUND1_FH:
         {
           gameRound = Text("R1: H");
@@ -158,8 +159,7 @@ class _GameZoneState extends State<GameZone> {
                   size: 25.0,
                 ),
                 onPressed: () {
-                  // print("next Player");
-                  GameManager.of(context).endTurn();
+                  getIt<GameController>().endTurn();
                 },
               ),
             ),
