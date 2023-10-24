@@ -25,20 +25,9 @@ Choose an available app service name
 2. Visit the page to check availability
 3. If it can't be found, it's available. Save https://YOURNAME.azurewebsites.net (with Replacement) into "web/assets/env" as BACKEND_IP=https://YOURNAME.azurewebsites.net
 
-Replace YOURNAME in command, check and adapt other parameters if necessary
-
+Replace YOURNAME in command, check and adapt other parameters if necessary. Then Execute the command from the python project folder (see app.py; named in this repo "python_server"):
 ```
-az webapp up `
-    --runtime 'PYTHON:3.9' `
-    --sku B1 ` 
-    --name 'YOURNAME' `
-    --location 'West Europe' `
-    --resource-group 'schocken' `
-    --logs
+az webapp up --runtime "PYTHON:3.9" --sku B1 --name "YOURNAME" --location "West Europe" --resource-group "schocken" --os Linux --logs
 ```
-
-This is the deploy command for powershell. To deploy with cmd, replace ` with \ .
-
-Execute the command from the python project folder (see app.py).
 
 After a few minutes, the web app is available.
